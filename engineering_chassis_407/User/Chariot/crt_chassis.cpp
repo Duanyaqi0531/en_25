@@ -52,9 +52,9 @@ void Class_Tricycle_Chassis::Init(float __Velocity_X_Max, float __Velocity_Y_Max
 
     //轮向电机ID初始化
     Motor_Wheel[0].Init(&hcan1, DJI_Motor_ID_0x205,DJI_Motor_Control_Method_OMEGA,3591.0f/187.0f);
-    Motor_Wheel[1].Init(&hcan1, DJI_Motor_ID_0x202,DJI_Motor_Control_Method_OMEGA,3591.0f/187.0f);
+    Motor_Wheel[1].Init(&hcan1, DJI_Motor_ID_0x207,DJI_Motor_Control_Method_OMEGA,3591.0f/187.0f);
     Motor_Wheel[2].Init(&hcan1, DJI_Motor_ID_0x206,DJI_Motor_Control_Method_OMEGA,3591.0f/187.0f);
-    Motor_Wheel[3].Init(&hcan1, DJI_Motor_ID_0x204,DJI_Motor_Control_Method_OMEGA,3591.0f/187.0f);
+    Motor_Wheel[3].Init(&hcan1, DJI_Motor_ID_0x208,DJI_Motor_Control_Method_OMEGA,3591.0f/187.0f);
     
 }
 
