@@ -1,0 +1,11 @@
+{
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "EIDE.ARM.Option.AxfToElf": true
+    },
+    "extensions": {}
+}

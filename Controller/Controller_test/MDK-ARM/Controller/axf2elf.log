@@ -1,0 +1,4 @@
+arm-none-eabi-objcopy --update-section ER_IROM1="C:\Users\Administrator\AppData\Local\Temp\\Controller_kHZ+dSRM.bin" "d:\RoboMaster\Controller_test2\Controller_test\MDK-ARM\..\MDK-ARM\Controller\Controller.axf" "d:\RoboMaster\Controller_test2\Controller_test\MDK-ARM\..\MDK-ARM\Controller\Controller.elf"
+
+arm-none-eabi-objcopy: d:\RoboMaster\Controller_test2\Controller_test\MDK-ARM\..\MDK-ARM\Controller\Controller.elf: warning: allocated section `RW_IRAM1' not in segment
+

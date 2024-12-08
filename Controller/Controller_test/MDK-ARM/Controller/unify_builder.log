@@ -1,0 +1,55 @@
+[2024-09-07 20:35:12]	[info] incremental build: 28 source files changed
+These source files will be recompiled
+---
+'d:\RoboMaster\Controller_test2\Controller_test\Core\Src\dma.c': object (.o) file not exist
+'d:\RoboMaster\Controller_test2\Controller_test\Core\Src\gpio.c': object (.o) file not exist
+'d:\RoboMaster\Controller_test2\Controller_test\Core\Src\main.c': object (.o) file not exist
+'d:\RoboMaster\Controller_test2\Controller_test\Core\Src\stm32f1xx_hal_msp.c': object (.o) file not exist
+'d:\RoboMaster\Controller_test2\Controller_test\Core\Src\stm32f1xx_it.c': object (.o) file not exist
+'d:\RoboMaster\Controller_test2\Controller_test\Core\Src\system_stm32f1xx.c': object (.o) file not exist
+'d:\RoboMaster\Controller_test2\Controller_test\Core\Src\tim.c': object (.o) file not exist
+'d:\RoboMaster\Controller_test2\Controller_test\Core\Src\usart.c': object (.o) file not exist
+'d:\RoboMaster\Controller_test2\Controller_test\Drivers\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal.c': object (.o) file not exist
+'d:\RoboMaster\Controller_test2\Controller_test\Drivers\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_cortex.c': object (.o) file not exist
+'d:\RoboMaster\Controller_test2\Controller_test\Drivers\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_dma.c': object (.o) file not exist
+'d:\RoboMaster\Controller_test2\Controller_test\Drivers\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_exti.c': object (.o) file not exist
+'d:\RoboMaster\Controller_test2\Controller_test\Drivers\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_flash.c': object (.o) file not exist
+'d:\RoboMaster\Controller_test2\Controller_test\Drivers\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_flash_ex.c': object (.o) file not exist
+'d:\RoboMaster\Controller_test2\Controller_test\Drivers\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_gpio.c': object (.o) file not exist
+'d:\RoboMaster\Controller_test2\Controller_test\Drivers\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_gpio_ex.c': object (.o) file not exist
+'d:\RoboMaster\Controller_test2\Controller_test\Drivers\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_pwr.c': object (.o) file not exist
+'d:\RoboMaster\Controller_test2\Controller_test\Drivers\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_rcc.c': object (.o) file not exist
+'d:\RoboMaster\Controller_test2\Controller_test\Drivers\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_rcc_ex.c': object (.o) file not exist
+'d:\RoboMaster\Controller_test2\Controller_test\Drivers\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_tim.c': object (.o) file not exist
+'d:\RoboMaster\Controller_test2\Controller_test\Drivers\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_tim_ex.c': object (.o) file not exist
+'d:\RoboMaster\Controller_test2\Controller_test\Drivers\STM32F1xx_HAL_Driver\Src\stm32f1xx_hal_uart.c': object (.o) file not exist
+'d:\RoboMaster\Controller_test2\Controller_test\User\Device\dvc_encoder.cpp': object (.o) file not exist
+'d:\RoboMaster\Controller_test2\Controller_test\User\Device\dvc_referee.cpp': object (.o) file not exist
+'d:\RoboMaster\Controller_test2\Controller_test\User\Middleware\Driver\drv_uart.cpp': object (.o) file not exist
+'d:\RoboMaster\Controller_test2\Controller_test\User\RoboTarm\RoboTram.cpp': object (.o) file not exist
+'d:\RoboMaster\Controller_test2\Controller_test\User\Task\tsk_config_and_callback.cpp': object (.o) file not exist
+'d:\RoboMaster\Controller_test2\Controller_test\MDK-ARM\startup_stm32f105xc.s': object (.o) file not exist
+
+[2024-09-07 20:35:17]	[done]
+	build successfully !
+
+[2024-09-07 20:36:12]	[done]
+	build successfully !
+
+[2024-09-07 20:38:43]	[info] incremental build: 1 source files changed
+These source files will be recompiled
+---
+'d:\RoboMaster\Controller_test2\Controller_test\User\Task\tsk_config_and_callback.cpp': source file has been changed.
+
+[2024-09-07 20:38:44]	[done]
+	build successfully !
+
+[2024-09-07 20:45:31]	[info] incremental build: 2 source files changed
+These source files will be recompiled
+---
+'d:\RoboMaster\Controller_test2\Controller_test\User\Device\dvc_referee.cpp': source file has been changed.
+'d:\RoboMaster\Controller_test2\Controller_test\User\Task\tsk_config_and_callback.cpp': source file has been changed.
+
+[2024-09-07 20:45:33]	[done]
+	build successfully !
+

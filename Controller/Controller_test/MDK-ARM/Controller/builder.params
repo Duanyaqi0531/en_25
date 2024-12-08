@@ -1,0 +1,134 @@
+{
+    "name": "Controller",
+    "target": "Controller",
+    "toolchain": "AC6",
+    "toolchainLocation": "C:\\Keil_v5\\ARM\\ARMCLANG",
+    "toolchainCfgFile": "c:\\Users\\Administrator\\.vscode\\extensions\\cl.eide-3.19.6\\res\\data\\models\\win32/arm.v6.model.json",
+    "buildMode": "fast|multhread",
+    "showRepathOnLog": true,
+    "threadNum": 4,
+    "rootDir": "d:\\RoboMaster\\Controller_test2\\Controller_test\\MDK-ARM",
+    "dumpPath": "..\\MDK-ARM\\Controller",
+    "outDir": "..\\MDK-ARM\\Controller",
+    "ram": 65536,
+    "rom": 262144,
+    "incDirs": [
+        "../Core/Inc",
+        "../Drivers/STM32F1xx_HAL_Driver/Inc",
+        "../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy",
+        "../Drivers/CMSIS/Device/ST/STM32F1xx/Include",
+        "../Drivers/CMSIS/Include",
+        "../User/Device",
+        "../User/Middleware/Driver",
+        "../User/Task",
+        "../User/RoboTarm",
+        "RTE/_Controller"
+    ],
+    "libDirs": [],
+    "defines": [
+        "USE_HAL_DRIVER",
+        "STM32F105xC"
+    ],
+    "sourceList": [
+        "../Core/Src/dma.c",
+        "../Core/Src/gpio.c",
+        "../Core/Src/main.c",
+        "../Core/Src/stm32f1xx_hal_msp.c",
+        "../Core/Src/stm32f1xx_it.c",
+        "../Core/Src/system_stm32f1xx.c",
+        "../Core/Src/tim.c",
+        "../Core/Src/usart.c",
+        "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.c",
+        "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.c",
+        "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_dma.c",
+        "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_exti.c",
+        "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash.c",
+        "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash_ex.c",
+        "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.c",
+        "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio_ex.c",
+        "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_pwr.c",
+        "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.c",
+        "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.c",
+        "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.c",
+        "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.c",
+        "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.c",
+        "../User/Device/dvc_encoder.cpp",
+        "../User/Device/dvc_referee.cpp",
+        "../User/Middleware/Driver/drv_uart.cpp",
+        "../User/RoboTarm/RoboTram.cpp",
+        "../User/Task/tsk_config_and_callback.cpp",
+        "startup_stm32f105xc.s"
+    ],
+    "sourceParams": {},
+    "sourceParamsMtime": 1725610345184.3877,
+    "options": {
+        "version": 3,
+        "beforeBuildTasks": [],
+        "afterBuildTasks": [
+            {
+                "name": "axf to elf",
+                "command": "axf2elf -d \"C:\\Keil_v5\\ARM\\ARMCLANG\" -i \"${outDir}\\Controller.axf\" -o \"${outDir}\\Controller.elf\" > \"${outDir}\\axf2elf.log\""
+            }
+        ],
+        "global": {
+            "use-microLIB": false,
+            "output-debug-info": "enable",
+            "microcontroller-cpu": "cortex-m3",
+            "microcontroller-fpu": "cortex-m3",
+            "microcontroller-float": "cortex-m3",
+            "target": "cortex-m3"
+        },
+        "c/cpp-compiler": {
+            "optimization": "level-balanced",
+            "language-c": "c99",
+            "language-cpp": "c++11",
+            "link-time-optimization": false,
+            "one-elf-section-per-function": true,
+            "short-enums#wchar": true,
+            "warnings": "no-warnings"
+        },
+        "asm-compiler": {
+            "$use": "asm-auto"
+        },
+        "linker": {
+            "output-format": "elf",
+            "misc-controls": "--diag_suppress=L6329",
+            "xo-base": "",
+            "ro-base": "",
+            "rw-base": "",
+            "link-scatter": [
+                "\"d:/RoboMaster/Controller_test2/Controller_test/MDK-ARM/Controller/Controller.sct\""
+            ]
+        }
+    },
+    "env": {
+        "KEIL_OUTPUT_DIR": "Controller",
+        "workspaceFolder": "d:\\RoboMaster\\Controller_test2\\Controller_test\\MDK-ARM",
+        "workspaceFolderBasename": "MDK-ARM",
+        "OutDir": "d:\\RoboMaster\\Controller_test2\\Controller_test\\MDK-ARM\\..\\MDK-ARM\\Controller",
+        "OutDirRoot": "..\\MDK-ARM",
+        "OutDirBase": "..\\MDK-ARM\\Controller",
+        "ProjectName": "Controller",
+        "ConfigName": "Controller",
+        "ProjectRoot": "d:\\RoboMaster\\Controller_test2\\Controller_test\\MDK-ARM",
+        "ExecutableName": "d:\\RoboMaster\\Controller_test2\\Controller_test\\MDK-ARM\\..\\MDK-ARM\\Controller\\Controller",
+        "ChipPackDir": "",
+        "ChipName": "",
+        "SYS_Platform": "win32",
+        "SYS_DirSep": "\\",
+        "SYS_DirSeparator": "\\",
+        "SYS_PathSep": ";",
+        "SYS_PathSeparator": ";",
+        "SYS_EOL": "\r\n",
+        "ToolchainRoot": "C:\\Keil_v5\\ARM\\ARMCLANG"
+    },
+    "sha": {
+        "c/cpp-defines": "6456b5d332ffb0ecf184281f60f7e484",
+        "beforeBuildTasks": "d751713988987e9331980363e24189ce",
+        "afterBuildTasks": "fc4e495cf2118ef7744efcf5a0cb082a",
+        "global": "3c2b285dfd51fd3e38577362bca301fa",
+        "c/cpp-compiler": "c770ab3e08fa3bb7b9e41361b6b3b2cd",
+        "asm-compiler": "f16bc066fd83f6b0cf6cd2b7eea65136",
+        "linker": "db8a383271f70b21af160f69ede8e045"
+    }
+}
