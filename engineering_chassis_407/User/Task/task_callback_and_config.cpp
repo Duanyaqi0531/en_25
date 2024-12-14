@@ -79,7 +79,7 @@ void Task1ms_TIM5_Callback()
 		 mod50_cnt = 0;
 		}
 		chariot.TIM_Chariot_PeriodElapsedCallback();
-		TIM_CAN_PeriodElapsedCallback();
+	TIM_CAN_PeriodElapsedCallback();
 }
 extern "C" void Task_Init()
 {
