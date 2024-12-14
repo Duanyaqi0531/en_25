@@ -255,7 +255,13 @@ void TIM_CAN_PeriodElapsedCallback()
 {   
     // static uint8_t mod10 = 0;
     // mod10++;
-    //can_tx_status[0]=CAN_Send_Data(&hcan1,0x200,CAN1_0x200_Tx_Data,8);
+//	CAN1_0x200_Tx_Data[0]=0;
+//	CAN1_0x200_Tx_Data[1]=0;
+//	CAN1_0x200_Tx_Data[4]=0;
+//	CAN1_0x200_Tx_Data[5]=0;
+//	CAN1_0x200_Tx_Data[6]=0;
+//	CAN1_0x200_Tx_Data[7]=0;
+    can_tx_status[0]=CAN_Send_Data(&hcan1,0x200,CAN1_0x200_Tx_Data,8);
 	 can_tx_status[1]=CAN_Send_Data(&hcan1,0x1ff,CAN1_0x1ff_Tx_Data,8);
     
 }
