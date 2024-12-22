@@ -48,7 +48,7 @@
 #include "dvc_GraphicsSendTask.h"
 #include "robotarm_task.h"
 #include "dvc_message.h"
-
+#include "dvc_relays.h"
 /* Private macros ------------------------------------------------------------*/
 
 /* Private types -------------------------------------------------------------*/
@@ -301,6 +301,9 @@ void Set_Joint_1_5_Angle_Init_Data()
 
 float tmp_1_5_angle[5] = {2.0f,175.0f,180.0f,0.0f,90.0f};
 float a=0.15;
+Class_Relays Relay1;
+Class_Relays Relay2;
+
 void Task1ms_TIM5_Callback()
 {
     /************ 判断设备在线状态判断 50ms (所有device:电机，遥控器，裁判系统等) ***************/
@@ -386,6 +389,9 @@ void Task1ms_TIM5_Callback()
     /****************************** 驱动层回调函数 1ms *****************************************/
     // 统一打包发送
     //    TIM_USB_PeriodElapsedCallback(&MiniPC_USB_Manage_Object);
+//				Relay1.Set_Target_State(Relays_Control_State_ENABLE);
+//				Relay2.Set_Target_State(Relays_Control_State_ENABLE);
+
 }
 /**
  * @brief 初始化任务
@@ -432,7 +438,6 @@ extern "C" void Task_Init()
 
     HAL_TIM_Base_Start_IT(&htim4);
     HAL_TIM_Base_Start_IT(&htim5);
-    
 }
 
 /**
