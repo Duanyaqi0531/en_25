@@ -261,10 +261,6 @@ public:
 	Class_DJI_Motor_C610 Motor_Joint4;
 	// 6轴电机
 	Class_DJI_Motor_C610 Motor_Joint5;
-	Class_DJI_Motor_C620 Chassis_Motor_1;
-	Class_DJI_Motor_C620 Chassis_Motor_2;
-	Class_DJI_Motor_C620 Chassis_Motor_3;
-	Class_DJI_Motor_C620 Chassis_Motor_4;
 	//机械臂抬升类
 	Class_RoRobotic_Arm_Uplift Arm_Uplift;
 	//底盘通信

@@ -95,7 +95,7 @@ enum Enum_Referee_Command_ID : uint16_t
 	Referee_Command_ID_ROBOT_SENTRY_INFO,
 	Referee_Command_ID_ROBOT_RADAR_INFO,
     Referee_Command_ID_INTERACTION = 0x0301,
-    Referee_Command_ID_INTERACTION_CUSTOM_CONTROLLER,
+    Referee_Command_ID_INTERACTION_CUSTOM_CONTROLLER=0x0302,
     Referee_Command_ID_INTERACTION_RADAR_SEND,
     Referee_Command_ID_INTERACTION_REMOTE_CONTROL,
     Referee_Command_ID_INTERACTION_Client_RECEIVE,

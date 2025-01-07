@@ -20,10 +20,10 @@ class Class_RobotTram
     inline float Get_Angle(Enum_RobotTram __ID);
     void Calculate_RobotTram_Angle();
     void RoboTram_Angle_Control_Trasmit();
-
+ Class_Encoder Encoder[5];
     protected:
     //五个编码器
-    Class_Encoder Encoder[5];
+   
     //机械臂对外角度 右手螺旋定则
     float Angle[5];
     //机械臂上电限位角度

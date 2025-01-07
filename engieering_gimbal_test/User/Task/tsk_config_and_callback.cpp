@@ -134,32 +134,14 @@ void Device_CAN2_Callback(Struct_CAN_Rx_Buffer *CAN_RxMessage)
             Robotarm.Motor_Joint1.CAN_RxCpltCallback(CAN_RxMessage->Data);
         }
         break;
-        case 0x202:
-        {
-//            Robotarm.Arm_Uplift.CAN_RxCpltCallback(CAN_RxMessage->Data);
-					Robotarm.Chassis_Motor_1.CAN_RxCpltCallback(CAN_RxMessage->Data);
-        }
+      
         break;
         case (0x203):
         {
             Robotarm.Arm_Uplift.CAN_RxCpltCallback(CAN_RxMessage->Data);
         }
         break;
-        case (0x205):
-        {
-            	Robotarm.Chassis_Motor_2.CAN_RxCpltCallback(CAN_RxMessage->Data);
-        }
-        break;
-        case (0x206):
-        {
-             	Robotarm.Chassis_Motor_3.CAN_RxCpltCallback(CAN_RxMessage->Data);
-        }
-        break;
-				 case (0x204):
-        {
-             	Robotarm.Chassis_Motor_4.CAN_RxCpltCallback(CAN_RxMessage->Data);
-        }
-        break;
+
     }
 }
 

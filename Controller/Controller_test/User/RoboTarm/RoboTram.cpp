@@ -1,7 +1,7 @@
 #include "RoboTram.h"
 #include "tim.h"
 #include "usart.h"
-
+#include "tsk_config_and_callback.h"
 void Class_RobotTram::Init()
 {
     Encoder[0].Init(&htim1);
@@ -9,6 +9,7 @@ void Class_RobotTram::Init()
     Encoder[2].Init(&htim3);
     Encoder[3].Init(&htim4);
     Encoder[4].Init(&htim5);
+
 }
 
 void Class_RobotTram::Calculate_RobotTram_Angle()

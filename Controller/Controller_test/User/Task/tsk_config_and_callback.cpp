@@ -27,7 +27,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 
-Class_Encoder Encoder[5];
+//Class_Encoder Encoder[5];
 Class_RobotTram RobotTram;
 Class_Referee Referee;
 
@@ -116,7 +116,7 @@ void Referee_UART3_Callback(uint8_t *Buffer, uint16_t Length)
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-  Encoder[4].GPIO_EXIT_Encoder_Updata(GPIO_Pin);
+  RobotTram.Encoder[4].GPIO_EXIT_Encoder_Updata(GPIO_Pin);
 }
 
 void Encoder_Data_Control_Trasmit()
@@ -127,8 +127,8 @@ void Encoder_Data_Control_Trasmit()
   {
     int16_t IntAngle;
     int8_t total_round;
-    IntAngle = (int16_t)(Encoder[i].Get_Now_Angle()*100);
-    total_round = (int8_t)Encoder[i].Get_Total_Round();
+    IntAngle = (int16_t)(RobotTram.Encoder[i].Get_Now_Angle()*100);
+    total_round = (int8_t)RobotTram.Encoder[i].Get_Total_Round();
     memcpy(&tmp_data[3*i+1],&IntAngle,2);
     memcpy(&tmp_data[3*i+3],&total_round,1);
   }
@@ -142,12 +142,12 @@ void Encoder_Data_Referee_Trasmit()
   {
     int16_t IntAngle;
     int8_t total_round;
-    IntAngle = (int16_t)(Encoder[i].Get_Now_Angle()*100);
-    total_round = (int8_t)Encoder[i].Get_Total_Round();
+    IntAngle = (int16_t)(RobotTram.Encoder[i].Get_Now_Angle()*100);
+    total_round = (int8_t)RobotTram.Encoder[i].Get_Total_Round();
     memcpy(&tmp_data[3*i],&IntAngle,2);
     memcpy(&tmp_data[3*i+2],&total_round,1);
   }
-  Referee.Data_Concatenation(Referee_Command_ID_INTERACTION_CUSTOM_CONTROLLER,tmp_data,20);
+  Referee.Data_Concatenation(Referee_Command_ID_INTERACTION_CUSTOM_CONTROLLER,tmp_data,30);
 }
 
 
@@ -159,21 +159,18 @@ void Task_Init()
   // Encoder[3].Init(&htim4);
 	// Encoder[4].Init(&htim5);
   RobotTram.Init();
+	Referee.Init(&huart3);
 }
 
 void Task_loop()
 {
   // //五个编码器角度计算
-  // for(auto i=0;i<5;i++)
-  // {
-  //   Encoder[i].TIM_Encoder_Calculatye();
-  // }
-  RobotTram.Calculate_RobotTram_Angle();
-  RobotTram.RoboTram_Angle_Control_Trasmit();
-	HAL_Delay(50);
-  //裁判系统打包发送所有的编码器角度
-  //Encoder_Data_Referee_Trasmit();
 
+  RobotTram.Calculate_RobotTram_Angle();
+  //RobotTram.RoboTram_Angle_Control_Trasmit();
+	HAL_Delay(30);
+  //裁判系统打包发送所有的编码器角度
+  Encoder_Data_Referee_Trasmit();
   //直接给机器发送所有的编码器角度
   // Encoder_Data_Control_Trasmit();
 }

@@ -577,6 +577,6 @@ void Class_Referee::Data_Concatenation(Enum_Referee_Command_ID __Referee_Command
     Referee_Tx_UART_Data.Frame_Head_ID.Referee_Command_ID = __Referee_Command_ID;
     memcpy(Referee_Tx_UART_Data.Data, __Data, __Data_length);
     Append_CRC16_Check_Sum((uint8_t *)(&Referee_Tx_UART_Data), DATA_FRAME_LENGTH + __Data_length);
-	HAL_UART_Transmit(UART_Manage_Object->UART_Handler, (uint8_t *)&Referee_Tx_UART_Data, DATA_FRAME_LENGTH + __Data_length,20);
+	HAL_UART_Transmit(&huart3, (uint8_t *)&Referee_Tx_UART_Data, DATA_FRAME_LENGTH + __Data_length,20);
 }
 /************************ COPYRIGHT(C) USTC-ROBOWALKER **************************/
