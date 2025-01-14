@@ -9,24 +9,28 @@ class Class_Relays
 	public:
  void Init(GPIO_TypeDef* GPIOX, uint16_t __Driver_GPIO_Pin);
  void Set_Target_State(Enum_Relays_Control_State __Target_State);
+ uint8_t Get_Open_flag();
+ void Set_Open_flag(uint8_t Flag);
  protected:
-     //³õÊ¼»¯Ïà¹Ø³£Á¿
+     //ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½Ø³ï¿½ï¿½ï¿½
 
-     //Çý¶¯¶¨Ê±Æ÷±àºÅ
+     //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½
      GPIO_TypeDef *Driver_GPIOX;
-     //¶¨Ê±Æ÷Í¨µÀ
+     //ï¿½ï¿½Ê±ï¿½ï¿½Í¨ï¿½ï¿½
      uint8_t Driver_GPIO_Pin;
-     //³£Á¿
 
-     //ÄÚ²¿±äÁ¿
+     uint8_t Open_flag=0;
+     //ï¿½ï¿½ï¿½ï¿½
 
-     //¶Á±äÁ¿
+     //ï¿½Ú²ï¿½ï¿½ï¿½ï¿½ï¿½
 
-     //Ð´±äÁ¿
+     //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
-     //¶ÁÐ´±äÁ¿
+     //Ð´ï¿½ï¿½ï¿½ï¿½
+
+     //ï¿½ï¿½Ð´ï¿½ï¿½ï¿½ï¿½
 		Enum_Relays_Control_State Target_State;
-     //ÄÚ²¿º¯Êý
+     //ï¿½Ú²ï¿½ï¿½ï¿½ï¿½ï¿½
     
      void Output();
  };

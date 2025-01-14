@@ -328,7 +328,7 @@ bool Class_Robotarm::Motor_Calibration(Class_AK_Motor_80_6 &Motor,uint8_t num,fl
 				Joint_Offset_Angle[num - 1] = Motor.Get_Now_Angle();
 					Motor.Set_AK_Motor_Control_Method(CAN_PACKET_SET_POS_SPD);
 				if(num==1)
-				Motor.Set_Target_Angle(Joint_Offset_Angle[num - 1]+2);
+				Motor.Set_Target_Angle(Joint_Offset_Angle[num - 1]+5);
 				else if(num==2)
 				Motor.Set_Target_Angle(Joint_Offset_Angle[num - 1]-2);
 				Motor.Task_Process_PeriodElapsedCallback();
@@ -469,7 +469,7 @@ bool Class_Robotarm::Robotarm_Calibration()
 	static uint8_t Arm_Cal_Flag =0;
 	if((Arm_Cal_Flag & (1<<1)) == 0)
 	{
-		if(Motor_Calibration(Motor_Joint1,1,300.0f,85.422f) == true)
+		if(Motor_Calibration(Motor_Joint1,1,-300.0f,85.422f) == true)
 		{
 			Arm_Cal_Flag |= (1<<1);
 			
@@ -531,7 +531,12 @@ bool Class_Robotarm::Robotarm_Angle_verification(float *Angle_now,float *Angle_t
 	}
 }
 	test_arm=Arm_Check_Flag;
-	if((Arm_Check_Flag == 54)||(Arm_Check_Flag == 62))
+//	if((Arm_Check_Flag == 54)||(Arm_Check_Flag == 62))
+//	{
+//		Arm_Check_Flag = 0;
+//		return true;
+//	}
+	if(Arm_Check_Flag>=6)
 	{
 		Arm_Check_Flag = 0;
 		return true;
@@ -662,6 +667,10 @@ void Class_Robotarm_Resolution::Reload_Task_Status_PeriodElapsedCallback()
 				{
 					Set_Status(Robotarm_Task_Status_Pick_First_Sliver);
 				}
+				if(Robotarm->DR16.Get_Left_Switch()==DR16_Switch_Status_DOWN)//开始取矿石
+				{
+					Set_Status(Robotarm_Task_Status_Pick_First_Gold);
+				}
 			}
 			break;
 			case (Robotarm_Task_Status_Pick_First_Sliver):
@@ -672,6 +681,7 @@ void Class_Robotarm_Resolution::Reload_Task_Status_PeriodElapsedCallback()
 				if(Robotarm->Robotarm_Angle_verification(Robotarm->Joint_World_Angle_Now,Robotarm->Jonit_AngleInit)==true)
 				{			
 //				//等待指令，
+					Robotarm->Relay1.Set_Open_flag(1);
 					if(Robotarm->DR16.Get_Left_Switch()==DR16_Switch_Status_UP){
 					Set_Status(Robotarm_Task_Status_Place_First_Sliver);}
 					else if(Robotarm->DR16.Get_Left_Switch()==DR16_Switch_Status_DOWN)
@@ -690,7 +700,8 @@ void Class_Robotarm_Resolution::Reload_Task_Status_PeriodElapsedCallback()
 				{
 					memcpy(Robotarm->Jonit_AngleInit, Robotarm->Angle_Place_Fisrt, 6 * sizeof(float));
 					if(Robotarm->Robotarm_Angle_verification(Robotarm->Joint_World_Angle_Now,Robotarm->Jonit_AngleInit)==true)
-					{
+					{	
+						Robotarm->Relay1.Set_Open_flag(0);
 						if(Robotarm->DR16.Get_Left_Switch()==DR16_Switch_Status_UP)
 						Set_Status(Robotarm_Task_Status_Pick_Second_Sliver);
 					}
@@ -702,13 +713,16 @@ void Class_Robotarm_Resolution::Reload_Task_Status_PeriodElapsedCallback()
 			break;
 			case (Robotarm_Task_Status_Pick_Second_Sliver):
 			{
-			
+				
 				memcpy(Robotarm->Jonit_AngleInit, Robotarm->Angle_Pick_Second, 6 * sizeof(float));//优先角度
 				if(Robotarm->Robotarm_Angle_verification(Robotarm->Joint_World_Angle_Now,Robotarm->Jonit_AngleInit)==true)
 				{		
 							Robotarm->Arm_Uplift.Target_Up_Length=Robotarm->Angle_Pick_Second[5];
+							Robotarm->Relay1.Set_Open_flag(1);
 					//				//等待指令，
 					if(Math_Abs(Robotarm->Arm_Uplift.Actual_Up_Length-Robotarm->Arm_Uplift.Target_Up_Length)<3){
+
+	
 					if(Robotarm->DR16.Get_Left_Switch()==DR16_Switch_Status_UP){
 					Set_Status(Robotarm_Task_Status_Place_Second_Sliver);}
 				
@@ -757,7 +771,7 @@ void Class_Robotarm_Resolution::Reload_Task_Status_PeriodElapsedCallback()
 			break;
 			case (Robotarm_Task_Status_Pick_First_Gold):
 			{
-				if(Angle_Play_Flag<10)
+			/* 			if(Angle_Play_Flag<10)
 				{	Robotarm->Arm_Uplift.Target_Up_Length=Robotarm->Angle_Pick_Fisrt_Gold[Angle_Play_Flag][5];//优先高度
 					if(Math_Abs(Robotarm->Arm_Uplift.Actual_Up_Length-Robotarm->Arm_Uplift.Target_Up_Length)<3)
 					{
@@ -772,29 +786,89 @@ void Class_Robotarm_Resolution::Reload_Task_Status_PeriodElapsedCallback()
 				{
 					Set_Status(Robotarm_Task_Status_Place_First_Gold);
 					Angle_Play_Flag=0;
+				} */
+				Robotarm->Arm_Uplift.Target_Up_Length=Robotarm->Angle_Pick_Gold[5];//优先高度
+				if(Math_Abs(Robotarm->Arm_Uplift.Actual_Up_Length-Robotarm->Arm_Uplift.Target_Up_Length)<1.2)
+				{
+						memcpy(Robotarm->Jonit_AngleInit, Robotarm->Angle_Pick_Gold, 6 * sizeof(float));
+						if(Robotarm->Robotarm_Angle_verification(Robotarm->Joint_World_Angle_Now,Robotarm->Jonit_AngleInit)==true)
+						{
+						if(Robotarm->DR16.Get_Left_Switch()==DR16_Switch_Status_DOWN){
+						Set_Status(Robotarm_Task_Status_Place_First_Gold);}
+						if(Robotarm->DR16.Get_Left_Switch()==DR16_Switch_Status_UP){
+						Robotarm->Arm_Uplift.Target_Up_Length+=2.5;}
+						}
 				}
-	
 			}
 			break;
-//			case (Robotarm_Task_Status_Place_First_Gold):
-//			{
-//				
-//			}
-//			break;
-//			case (Robotarm_Task_Status_Pick_Second_Gold):
-//			{
-//				
-//			}
-//			break;
-//			case (Robotarm_Task_Status_Place_Second_Gold):
-//			{
-//				
-//			}
-//			break;
-//			case (Robotarm_Task_Status_Pick_Third_Gold):
-//			{
-//				
-//			}
+			case (Robotarm_Task_Status_Place_First_Gold):
+			{
+
+				Robotarm->Arm_Uplift.Target_Up_Length=Robotarm->Angle_Place_Fisrt[5];//优先高度
+				if(Math_Abs(Robotarm->Arm_Uplift.Actual_Up_Length-Robotarm->Arm_Uplift.Target_Up_Length)<3)
+				{
+					memcpy(Robotarm->Jonit_AngleInit, Robotarm->Angle_Place_Fisrt, 6 * sizeof(float));
+					if(Robotarm->Robotarm_Angle_verification(Robotarm->Joint_World_Angle_Now,Robotarm->Jonit_AngleInit)==true)
+					{
+						if(Robotarm->DR16.Get_Left_Switch()==DR16_Switch_Status_DOWN)
+						Set_Status(Robotarm_Task_Status_Pick_Second_Gold);
+					}
+				}
+			}
+			break;
+			case (Robotarm_Task_Status_Pick_Second_Gold):
+			{
+				
+				//if(Math_Abs(Robotarm->Arm_Uplift.Actual_Up_Length-Robotarm->Arm_Uplift.Target_Up_Length)<1.2)
+				//{
+						memcpy(Robotarm->Jonit_AngleInit, Robotarm->Angle_Pick_Gold, 6 * sizeof(float));
+						if(Robotarm->Robotarm_Angle_verification(Robotarm->Joint_World_Angle_Now,Robotarm->Jonit_AngleInit)==true)
+						{
+						Robotarm->Arm_Uplift.Target_Up_Length=Robotarm->Angle_Pick_Gold[5];//优先高度
+						if(Math_Abs(Robotarm->Arm_Uplift.Actual_Up_Length-Robotarm->Arm_Uplift.Target_Up_Length)<1.2)
+						{
+						if(Robotarm->DR16.Get_Left_Switch()==DR16_Switch_Status_DOWN){
+						Set_Status(Robotarm_Task_Status_Place_Second_Gold);}
+						if(Robotarm->DR16.Get_Left_Switch()==DR16_Switch_Status_UP){
+						Robotarm->Arm_Uplift.Target_Up_Length+=2.5;}
+						}
+				}
+				
+			}
+			break;
+			case (Robotarm_Task_Status_Place_Second_Gold):
+			{
+				Robotarm->Arm_Uplift.Target_Up_Length=Robotarm->Angle_Place_Second[5];//优先高度
+				if(Math_Abs(Robotarm->Arm_Uplift.Actual_Up_Length-Robotarm->Arm_Uplift.Target_Up_Length)<3)
+				{
+					memcpy(Robotarm->Jonit_AngleInit, Robotarm->Angle_Place_Second, 6 * sizeof(float));
+					if(Robotarm->Robotarm_Angle_verification(Robotarm->Joint_World_Angle_Now,Robotarm->Jonit_AngleInit)==true)
+					{
+						if(Robotarm->DR16.Get_Left_Switch()==DR16_Switch_Status_DOWN)
+						Set_Status(Robotarm_Task_Status_Pick_Third_Gold);
+					}
+				}
+			}
+			break;
+			case (Robotarm_Task_Status_Pick_Third_Gold):
+			{
+				
+				//if(Math_Abs(Robotarm->Arm_Uplift.Actual_Up_Length-Robotarm->Arm_Uplift.Target_Up_Length)<1.2)
+				//{
+						memcpy(Robotarm->Jonit_AngleInit, Robotarm->Angle_Pick_Gold, 6 * sizeof(float));
+						if(Robotarm->Robotarm_Angle_verification(Robotarm->Joint_World_Angle_Now,Robotarm->Jonit_AngleInit)==true)
+						{
+						Robotarm->Arm_Uplift.Target_Up_Length=Robotarm->Angle_Pick_Gold[5];//优先高度
+						if(Math_Abs(Robotarm->Arm_Uplift.Actual_Up_Length-Robotarm->Arm_Uplift.Target_Up_Length)<1.2)
+						{
+						if(Robotarm->DR16.Get_Left_Switch()==DR16_Switch_Status_DOWN){
+						Set_Status(Robotarm_Task_Status_Exchange);}
+						if(Robotarm->DR16.Get_Left_Switch()==DR16_Switch_Status_UP){
+						Robotarm->Arm_Uplift.Target_Up_Length+=2.5;}
+						}
+						}
+				
+			}
 			break;
 	
 			break;

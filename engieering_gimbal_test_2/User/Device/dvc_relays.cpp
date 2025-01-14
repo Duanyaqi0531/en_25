@@ -10,10 +10,10 @@
 // /* Function prototypes -------------------------------------------------------*/
 
 // /**
-//  * @brief ³õÊ¼»¯
+//  * @brief ï¿½ï¿½Ê¼ï¿½ï¿½
 //  * 
-//  * @param __Driver_PWM_TIM ¶æ»úÇý¶¯¶¨Ê±Æ÷±àºÅ
-//  * @param __Driver_PWM_TIM_Channel_x ¶¨Ê±Æ÷Í¨µÀ
+//  * @param __Driver_PWM_TIM ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½
+//  * @param __Driver_PWM_TIM_Channel_x ï¿½ï¿½Ê±ï¿½ï¿½Í¨ï¿½ï¿½
 
 //  */
  void Class_Relays::Init(GPIO_TypeDef* __Driver_GPIOX, uint16_t __Driver_GPIO_Pin)
@@ -24,28 +24,41 @@
  }
 
 // /**
-//  * @brief ½Ç¶ÈÊä³ö
+//  * @brief ï¿½Ç¶ï¿½ï¿½ï¿½ï¿½
 //  * 
 //  */
  void Class_Relays::Output()
  {
-	if(Target_State)
+	if(Target_State==Relays_Control_State_ENABLE)
      HAL_GPIO_WritePin(Driver_GPIOX,Driver_GPIO_Pin,GPIO_PIN_SET);
 	else 
-	HAL_GPIO_WritePin(Driver_GPIOX,Driver_GPIO_Pin,GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(Driver_GPIOX,Driver_GPIO_Pin,GPIO_PIN_RESET);
  }
  /* Exported variables --------------------------------------------------------*/
 
  /* Exported function declarations --------------------------------------------*/
 
  /**
-  * @brief Éè¶¨Ä¿±êÖµ
+  * @brief ï¿½è¶¨Ä¿ï¿½ï¿½Öµ
   * 
-  * @param __Target_Angle ¶æ»ú½Ç¶ÈÄ¿±êÖµ
+  * @param __Target
   */
  void Class_Relays::Set_Target_State(Enum_Relays_Control_State __Target_State)
  {
      Target_State = __Target_State;
-     Output();
+     //Output();
+	 if(Target_State==Relays_Control_State_ENABLE)
+     HAL_GPIO_WritePin(Driver_GPIOX,Driver_GPIO_Pin,GPIO_PIN_SET);
+	else 
+		HAL_GPIO_WritePin(Driver_GPIOX,Driver_GPIO_Pin,GPIO_PIN_RESET);
+ }
+  uint8_t Class_Relays::Get_Open_flag()
+  {
+    return Open_flag;
+  }
+ void Class_Relays::Set_Open_flag(uint8_t Flag)
+ {
+    Open_flag=Flag;
+
  }
 // /************************ COPYRIGHT(C) USTC-ROBOWALKER **************************/

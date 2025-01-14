@@ -36,7 +36,7 @@ void Class_Tricycle_Chassis::Init(float __Velocity_X_Max, float __Velocity_Y_Max
     //斜坡函数加减速速度X  控制周期1ms
     Slope_Velocity_X.Init(0.003f,0.010f);
     //斜坡函数加减速速度Y  控制周期1ms
-    Slope_Velocity_Y.Init(0.003f,0.010f);
+    Slope_Velocity_Y.Init(0.0025f,0.010f);
     //斜坡函数加减速角速度
     Slope_Omega.Init(0.010f, 0.025f);
 
@@ -49,7 +49,7 @@ void Class_Tricycle_Chassis::Init(float __Velocity_X_Max, float __Velocity_Y_Max
     //电机PID批量初始化
     for (int i = 0; i < 4; i++)
     {
-        Motor_Wheel[i].PID_Omega.Init(1200.0f, 0.0f, 0.0f, 0.0f, Motor_Wheel[i].Get_Output_Max(), Motor_Wheel[i].Get_Output_Max());
+        Motor_Wheel[i].PID_Omega.Init(1500.0f, 12.0f, 0.0f, 0.0f,5000.f, Motor_Wheel[i].Get_Output_Max());
     }
 
     //轮向电机ID初始化

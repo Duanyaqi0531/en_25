@@ -18,7 +18,10 @@ void Class_RobotTram::Calculate_RobotTram_Angle()
     {
         Encoder[i].TIM_Encoder_Calculatye();
         Angle[i] = -1.f*Encoder[i].Get_Total_Angle() + Angle_Offset[i];
+			
     }
+				Angle[4]= Angle[4]*2;
+				Angle[3]= Angle[3]*2;
 }
 uint8_t tmp_data[12];
 void Class_RobotTram::RoboTram_Angle_Control_Trasmit()

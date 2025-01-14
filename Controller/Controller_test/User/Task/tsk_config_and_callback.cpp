@@ -167,12 +167,12 @@ void Task_loop()
   // //五个编码器角度计算
 
   RobotTram.Calculate_RobotTram_Angle();
-  //RobotTram.RoboTram_Angle_Control_Trasmit();
+  RobotTram.RoboTram_Angle_Control_Trasmit();
 	HAL_Delay(30);
   //裁判系统打包发送所有的编码器角度
-  Encoder_Data_Referee_Trasmit();
+  //Encoder_Data_Referee_Trasmit();
   //直接给机器发送所有的编码器角度
-  // Encoder_Data_Control_Trasmit();
+   //Encoder_Data_Control_Trasmit();
 }
 
 

@@ -2,7 +2,7 @@
 
 void Class_Chariot::Init()
 {
-    chassis.Init(0.5f,3.0f,2.0f);
+    chassis.Init(1.0f,3.0f,2.0f);
 }
 
 

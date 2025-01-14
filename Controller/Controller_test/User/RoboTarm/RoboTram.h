@@ -27,7 +27,7 @@ class Class_RobotTram
     //机械臂对外角度 右手螺旋定则
     float Angle[5];
     //机械臂上电限位角度
-    float Angle_Offset[5] = {-10.f,186.f,186.f,0.f,45.f};
+    float Angle_Offset[5] = {0.f,183.f,213.f,0.f,90.f};
 
 };
 
