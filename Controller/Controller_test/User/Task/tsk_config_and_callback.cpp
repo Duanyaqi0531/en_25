@@ -17,6 +17,9 @@
 /* Includes ------------------------------------------------------------------*/
 #include "tsk_config_and_callback.h"
 #include "dvc_encoder.h"
+#include "drv_flash.h"
+#include "drv_tim.h"
+#include "drv_uart.h"
 #include "dvc_referee.h"
 #include "RoboTram.h"
 #include "tim.h"
@@ -160,15 +163,40 @@ void Task_Init()
 	// Encoder[4].Init(&htim5);
   RobotTram.Init();
 	Referee.Init(&huart3);
-}
+	// TIM_Init(&htim6, Task1ms_TIM6_Callback);
+//		Store_Init();
+//		Store_Data[0]=0xA5A5;
 
+
+}
+bool start_flag=0;
+bool over_flag=0;
+bool read_flag=0;
+uint8_t record_num;
+extern uint8_t tmp_data[12];
+extern uint16_t Store_Data[STORE_COUNT];	
 void Task_loop()
 {
   // //五个编码器角度计算
 
   RobotTram.Calculate_RobotTram_Angle();
   RobotTram.RoboTram_Angle_Control_Trasmit();
-	HAL_Delay(30);
+//	if(start_flag)
+//		{
+//			for(int i=0;i<5;i++)
+//			{
+//				uint16_t temp=RobotTram.Get_Angle(i+1)*100;
+//				memcpy(&Store_Data[record_num*5+1],&temp,2);
+//			}
+//			if(record_num++>=100)start_flag=0;
+//		}
+//		if(over_flag){Store_Save();over_flag=0;};
+//		if(read_flag)
+//		{
+//			
+//		}
+		HAL_Delay(30);
+//	HAL_Delay(500);
   //裁判系统打包发送所有的编码器角度
   //Encoder_Data_Referee_Trasmit();
   //直接给机器发送所有的编码器角度

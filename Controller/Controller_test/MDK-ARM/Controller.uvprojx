@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F105xC</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F1xx/Include;../Drivers/CMSIS/Include;..\User\Device;..\User\Middleware\Driver;..\User\Task;..\User\RoboTarm</IncludePath>
+              <IncludePath>../Core/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc;../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32F1xx/Include;../Drivers/CMSIS/Include;../User/Device;../User/Middleware/Driver;../User/Task;../User/RoboTarm</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -701,6 +701,16 @@
               <FileName>drv_uart.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\User\Middleware\Driver\drv_uart.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>drv_flash.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\User\Middleware\Driver\drv_flash.cpp</FilePath>
+            </File>
+            <File>
+              <FileName>drv_tim.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\User\Middleware\Driver\drv_tim.cpp</FilePath>
             </File>
           </Files>
         </Group>

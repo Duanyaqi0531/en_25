@@ -1,6 +1,5 @@
-controller/tsk_config_and_callback.o: \
-  ..\User\Task\tsk_config_and_callback.cpp \
-  ..\User\Task\tsk_config_and_callback.h ..\User\Device\dvc_encoder.h \
+controller/drv_tim.o: ..\User\Middleware\Driver\drv_tim.cpp \
+  ..\User\Middleware\Driver\drv_tim.h \
   ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal.h \
   ..\Core\Inc\stm32f1xx_hal_conf.h \
   ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_rcc.h \
@@ -22,9 +21,4 @@ controller/tsk_config_and_callback.o: \
   ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_pwr.h \
   ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_tim.h \
   ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_tim_ex.h \
-  ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_uart.h \
-  ..\User\Middleware\Driver\drv_flash.h \
-  ..\User\Middleware\Driver\drv_tim.h \
-  ..\User\Middleware\Driver\drv_uart.h ..\Core\Inc\usart.h \
-  ..\Core\Inc\main.h ..\User\Device\dvc_referee.h \
-  ..\User\RoboTarm\RoboTram.h ..\Core\Inc\tim.h
+  ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_uart.h

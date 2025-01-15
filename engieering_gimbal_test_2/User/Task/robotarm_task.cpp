@@ -27,8 +27,8 @@ Class_Robotarm Robotarm;
  * @brief 云台初始化
  *
  */
- float kp_Angle=18,ki_Angle=0.1,kd_Angle=0;
- float kp_Omega=16,ki_Omega=0.1,kd_Omega=0;
+ float kp_Angle=22,ki_Angle=0.15,kd_Angle=0;
+ float kp_Omega=20,ki_Omega=0.15,kd_Omega=0;
 #define _CAN_PACKET_SET_POS_SPD
 
 //#define _CAN_PACKET_SET_RUN_CONTROL
@@ -681,16 +681,33 @@ void Class_Robotarm_Resolution::Reload_Task_Status_PeriodElapsedCallback()
 				if(Robotarm->Robotarm_Angle_verification(Robotarm->Joint_World_Angle_Now,Robotarm->Jonit_AngleInit)==true)
 				{			
 //				//等待指令，
-					Robotarm->Relay1.Set_Open_flag(1);
+					//Robotarm->Relay1.Set_Open_flag(1);
 					if(Robotarm->DR16.Get_Left_Switch()==DR16_Switch_Status_UP){
-					Set_Status(Robotarm_Task_Status_Place_First_Sliver);}
+						//Set_Status(Robotarm_Task_Status_Place_First_Sliver);//中期考核暂时不放矿仓
+						Set_Status(Robotarm_Task_Status_First_Sliver_Test);
+						}
 					else if(Robotarm->DR16.Get_Left_Switch()==DR16_Switch_Status_DOWN)
 					{
-						Set_Status(Robotarm_Task_Status_Wait_Order);
+						Robotarm->Arm_Uplift.Target_Up_Length-=5;
 					}
 				}
 			}
+			break;
+			case (Robotarm_Task_Status_First_Sliver_Test):
+			{
+				Robotarm->Arm_Uplift.Target_Up_Length=15;
+					if(Math_Abs(Robotarm->Arm_Uplift.Actual_Up_Length-Robotarm->Arm_Uplift.Target_Up_Length)<2)
+				{
+						Set_Status(Robotarm_Task_Status_First_Sliver_Test_2);
+				}
+			}
+			break;
+			case (Robotarm_Task_Status_First_Sliver_Test_2):
+			{
+				Robotarm->Arm_Uplift.Target_Up_Length=13;
+				memcpy(Robotarm->Jonit_AngleInit, Robotarm->Angle_On_The_Way, 6 * sizeof(float));
 			
+			}
 			break;
 			case (Robotarm_Task_Status_Place_First_Sliver):
 			{
@@ -701,7 +718,7 @@ void Class_Robotarm_Resolution::Reload_Task_Status_PeriodElapsedCallback()
 					memcpy(Robotarm->Jonit_AngleInit, Robotarm->Angle_Place_Fisrt, 6 * sizeof(float));
 					if(Robotarm->Robotarm_Angle_verification(Robotarm->Joint_World_Angle_Now,Robotarm->Jonit_AngleInit)==true)
 					{	
-						Robotarm->Relay1.Set_Open_flag(0);
+						//Robotarm->Relay1.Set_Open_flag(0);
 						if(Robotarm->DR16.Get_Left_Switch()==DR16_Switch_Status_UP)
 						Set_Status(Robotarm_Task_Status_Pick_Second_Sliver);
 					}
@@ -718,19 +735,20 @@ void Class_Robotarm_Resolution::Reload_Task_Status_PeriodElapsedCallback()
 				if(Robotarm->Robotarm_Angle_verification(Robotarm->Joint_World_Angle_Now,Robotarm->Jonit_AngleInit)==true)
 				{		
 							Robotarm->Arm_Uplift.Target_Up_Length=Robotarm->Angle_Pick_Second[5];
-							Robotarm->Relay1.Set_Open_flag(1);
+							//Robotarm->Relay1.Set_Open_flag(1);
 					//				//等待指令，
 					if(Math_Abs(Robotarm->Arm_Uplift.Actual_Up_Length-Robotarm->Arm_Uplift.Target_Up_Length)<3){
 
 	
 					if(Robotarm->DR16.Get_Left_Switch()==DR16_Switch_Status_UP){
-					Set_Status(Robotarm_Task_Status_Place_Second_Sliver);}
+					Set_Status(Robotarm_Task_Status_Place_Second_Sliver);
+					}
 				
 				}
 				}
 
 				if(Robotarm->DR16.Get_Left_Switch()==DR16_Switch_Status_DOWN)
-				{Set_Status(Robotarm_Task_Status_Wait_Order);}
+				{	Robotarm->Arm_Uplift.Target_Up_Length-=5;}
 				}
 			
 			break;
@@ -796,7 +814,7 @@ void Class_Robotarm_Resolution::Reload_Task_Status_PeriodElapsedCallback()
 						if(Robotarm->DR16.Get_Left_Switch()==DR16_Switch_Status_DOWN){
 						Set_Status(Robotarm_Task_Status_Place_First_Gold);}
 						if(Robotarm->DR16.Get_Left_Switch()==DR16_Switch_Status_UP){
-						Robotarm->Arm_Uplift.Target_Up_Length+=2.5;}
+						Robotarm->Arm_Uplift.Target_Up_Length+=2.0f;}
 						}
 				}
 			}
@@ -830,7 +848,7 @@ void Class_Robotarm_Resolution::Reload_Task_Status_PeriodElapsedCallback()
 						if(Robotarm->DR16.Get_Left_Switch()==DR16_Switch_Status_DOWN){
 						Set_Status(Robotarm_Task_Status_Place_Second_Gold);}
 						if(Robotarm->DR16.Get_Left_Switch()==DR16_Switch_Status_UP){
-						Robotarm->Arm_Uplift.Target_Up_Length+=2.5;}
+						Robotarm->Arm_Uplift.Target_Up_Length+=2.0f;}
 						}
 				}
 				
@@ -864,7 +882,7 @@ void Class_Robotarm_Resolution::Reload_Task_Status_PeriodElapsedCallback()
 						if(Robotarm->DR16.Get_Left_Switch()==DR16_Switch_Status_DOWN){
 						Set_Status(Robotarm_Task_Status_Exchange);}
 						if(Robotarm->DR16.Get_Left_Switch()==DR16_Switch_Status_UP){
-						Robotarm->Arm_Uplift.Target_Up_Length+=2.5;}
+						Robotarm->Arm_Uplift.Target_Up_Length+=2.0f;}
 						}
 						}
 				

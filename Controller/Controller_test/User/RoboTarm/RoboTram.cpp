@@ -37,3 +37,4 @@ void Class_RobotTram::RoboTram_Angle_Control_Trasmit()
     tmp_data[11] = 0x11;
     HAL_UART_Transmit(&huart3,tmp_data,12,10);
 }
+

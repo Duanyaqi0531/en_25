@@ -17,7 +17,7 @@ class Class_RobotTram
 {
     public:
     void Init();
-    inline float Get_Angle(Enum_RobotTram __ID);
+    inline float Get_Angle(uint8_t __ID);
     void Calculate_RobotTram_Angle();
     void RoboTram_Angle_Control_Trasmit();
  Class_Encoder Encoder[5];
@@ -32,7 +32,7 @@ class Class_RobotTram
 };
 
 
-float Class_RobotTram::Get_Angle(Enum_RobotTram __ID)
+float Class_RobotTram::Get_Angle(uint8_t __ID)
 {
     return (Angle[__ID]);
 }

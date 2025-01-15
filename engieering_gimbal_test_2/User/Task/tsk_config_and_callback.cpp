@@ -92,6 +92,11 @@ void Device_CAN1_Callback(Struct_CAN_Rx_Buffer *CAN_RxMessage)
                Robotarm.Motor_Joint5.CAN_RxCpltCallback(CAN_RxMessage->Data);
             }
             break;
+						  case (0x05)://
+            {
+                Robotarm.Motor_Joint3.CAN_RxCpltCallback(CAN_RxMessage->Data);
+            }
+            break;
         }
 	}
 	else if(CAN_RxMessage->Header.IDE == CAN_ID_EXT)
@@ -105,11 +110,7 @@ void Device_CAN1_Callback(Struct_CAN_Rx_Buffer *CAN_RxMessage)
             }
             break;
 
-            case (0x05)://
-            {
-                Robotarm.Motor_Joint3.CAN_RxCpltCallback(CAN_RxMessage->Data);
-            }
-            break;
+          
           
 				
 		}
@@ -333,7 +334,11 @@ void Task1ms_TIM5_Callback()
             switch (Robotarm.DR16.Get_Right_Switch())
             {
             case (DR16_Switch_Status_DOWN): // 当遥控器右拨杆朝下的时候使能自定义控制器控制
-            {
+            {			
+									Robotarm.Motor_Joint4.PID_Angle.Set_K_P(18);
+									Robotarm.Motor_Joint4.PID_Omega.Set_K_P(16);
+									Robotarm.Motor_Joint5.PID_Angle.Set_K_P(18);
+									Robotarm.Motor_Joint5.PID_Omega.Set_K_P(16);
 									Set_Joint_1_5_Angle_Init_Data();
 									if (huart1.ErrorCode)
                                     {
@@ -344,10 +349,11 @@ void Task1ms_TIM5_Callback()
 										UART_Init(&huart1, Image_UART1_Callback, 40);//如果串口错误，重启使能串口
 										#endif
 										}
-									if(Robotarm.DR16.Get_Left_Switch()==DR16_Switch_Status_UP)
+									if(Robotarm.DR16.Get_Left_Switch()==DR16_Switch_Status_UP)//抬升高度控制，在自定义控制器控制模式下通过左拨杆控制抬升高度
 									{Robotarm.Arm_Uplift.Target_Up_Length+=0.002;}
 									else if(Robotarm.DR16.Get_Left_Switch()==DR16_Switch_Status_DOWN)
 									{Robotarm.Arm_Uplift.Target_Up_Length-=0.002;}
+									Math_Constrain(Robotarm.Arm_Uplift.Target_Up_Length,0.f,25.f);
 										
 						}
             break;
@@ -358,12 +364,16 @@ void Task1ms_TIM5_Callback()
 //                else
 //                    Robotarm.MiniPc.Transform_Angle_Rx(Robotarm.Jonit_AngleInit);
 //							
-				Robotarm.Robotarm_Resolution.Reload_Task_Status_PeriodElapsedCallback();//状态机调试
+								Robotarm.Motor_Joint4.PID_Angle.Set_K_P(22);
+									Robotarm.Motor_Joint4.PID_Omega.Set_K_P(20);
+									Robotarm.Motor_Joint5.PID_Angle.Set_K_P(22);
+									Robotarm.Motor_Joint5.PID_Omega.Set_K_P(20);
+				Robotarm.Robotarm_Resolution.Reload_Task_Status_PeriodElapsedCallback();//状态机调试入口
 							
 
             }
             break;
-            case (DR16_Switch_Status_MIDDLE):
+            case (DR16_Switch_Status_MIDDLE)://右拨杆为中时保持行进姿态
             {
                 Robotarm.Robotarm_Resolution.Set_Status(Robotarm_Task_Status_Wait_Order);
                  memcpy(Robotarm.Jonit_AngleInit, tmp_1_5_angle, 6 * sizeof(float));
@@ -377,7 +387,7 @@ void Task1ms_TIM5_Callback()
             }
             break;
             }
-					if(Robotarm.DR16.Get_Right_Y()>0.8)
+					if(Robotarm.DR16.Get_Right_Y()>0.8)//气泵继电器临时控制
                     {Robotarm.Relay1.Set_Open_flag(1);}
                     else if(Robotarm.DR16.Get_Right_Y()<-0.8)
                     {Robotarm.Relay1.Set_Open_flag(0);}

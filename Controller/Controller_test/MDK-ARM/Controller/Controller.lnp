@@ -26,6 +26,8 @@
 "controller\dvc_referee.o"
 "controller\tsk_config_and_callback.o"
 "controller\drv_uart.o"
+"controller\drv_flash.o"
+"controller\drv_tim.o"
 "controller\robotram.o"
 --strict --scatter "Controller\Controller.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols

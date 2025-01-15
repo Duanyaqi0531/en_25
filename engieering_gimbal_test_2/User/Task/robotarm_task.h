@@ -51,6 +51,8 @@ enum Enum_Robotarm_Task_Status
 		Robotarm_Task_Status_Exchange=3,
 	
     	Robotarm_Task_Status_Pick_First_Sliver=10,
+		Robotarm_Task_Status_First_Sliver_Test=90,//中期考核使用状态，后期去除
+			Robotarm_Task_Status_First_Sliver_Test_2=91,
 		Robotarm_Task_Status_Place_First_Sliver=11,
 		Robotarm_Task_Status_Pick_Second_Sliver=20,
 		Robotarm_Task_Status_Place_Second_Sliver=21,
@@ -329,18 +331,16 @@ protected:
     //常量
 		//车在特定位置，各种情况机械臂的角度
 		//取出银矿相关角度
-		const float Angle_Pick_Fisrt[6]={90,145,145,0,0,0};
-		const float Angle_Place_Fisrt[6]={45,3,10,0,0,13};
-		const float Angle_Pick_Second[6]={45,145,178,0,0,0};
-		const float Angle_Place_Second[6]={150,178,135,0,0,13};
+	//	const float Angle_Pick_Fisrt[6]={90,145,145,0,0,5};
+		const float Angle_Pick_Fisrt[6]={70,110,180,0,0,5};
+		const float Angle_Place_Second[6]={45,3,10,0,0,13};
+		//const float Angle_Pick_Second[6]={45,145,178,0,0,5};
+		const float Angle_Pick_Second[6]={70,110,0,0,0,5};
+		const float Angle_Place_Fisrt[6]={150,178,135,0,0,13};
     	const float Angle_Pick_Third[6]={3,140,170,0,0,0};
 		//取出金矿相关角度		
-		const float Angle_Pick_Gold[6]={50,175,40,0,90,4};
-		//const float Angle_Pick_Fisrt_Gold[10][6]={{90,145,145,0,0,0},{0,0,0,0,0,0},{0,0,0,0,0,0},{0,0,0,0,0,0},{0,0,0,0,0,0},{0,0,0,0,0,0},{0,0,0,0,0,0},{0,0,0,0,0,0},{0,0,0,0,0,0},{0,0,0,0,0,0}};
-		//const float Angle_Place_Fisrt_Gold[10][6]={{45,3,10,0,0,10},{0,0,0,0,0,0},{0,0,0,0,0,0},{0,0,0,0,0,0},{0,0,0,0,0,0},{0,0,0,0,0,0},{0,0,0,0,0,0},{0,0,0,0,0,0},{0,0,0,0,0,0},{0,0,0,0,0,0}};
-		//const float Angle_Pick_Second_Gold[10][6]={{45,145,178,0,0,0},{0,0,0,0,0,0},{0,0,0,0,0,0},{0,0,0,0,0,0},{0,0,0,0,0,0},{0,0,0,0,0,0},{0,0,0,0,0,0},{0,0,0,0,0,0},{0,0,0,0,0,0},{0,0,0,0,0,0}};
-		//const float Angle_Place_Second_Gold[10][6]={{150,178,135,0,0,10},{0,0,0,0,0,0},{0,0,0,0,0,0},{0,0,0,0,0,0},{0,0,0,0,0,0},{0,0,0,0,0,0},{0,0,0,0,0,0},{0,0,0,0,0,0},{0,0,0,0,0,0},{0,0,0,0,0,0}};
-    	//const float Angle_Pick_Third_Gold[10][6]={{3,140,170,0,0,0},{0,0,0,0,0,0},{0,0,0,0,0,0},{0,0,0,0,0,0},{0,0,0,0,0,0},{0,0,0,0,0,0},{0,0,0,0,0,0},{0,0,0,0,0,0},{0,0,0,0,0,0},{0,0,0,0,0,0}};	
+		const float Angle_Pick_Gold[6]={50,175,40,0,90,5.0f};
+		
 		//行进过程中角度			
 		const float Angle_On_The_Way[6] = {2.0f,175.0f,180.0f,0.0f,90.0f,0.0f};
     //关节角度限制
