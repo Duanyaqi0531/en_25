@@ -353,7 +353,7 @@ void Task1ms_TIM5_Callback()
 									{Robotarm.Arm_Uplift.Target_Up_Length+=0.002;}
 									else if(Robotarm.DR16.Get_Left_Switch()==DR16_Switch_Status_DOWN)
 									{Robotarm.Arm_Uplift.Target_Up_Length-=0.002;}
-									Math_Constrain(Robotarm.Arm_Uplift.Target_Up_Length,0.f,25.f);
+									Math_Constrain(Robotarm.Arm_Uplift.Target_Up_Length,0.f,40.f);
 										
 						}
             break;
