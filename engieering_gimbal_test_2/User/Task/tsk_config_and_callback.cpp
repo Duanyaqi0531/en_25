@@ -350,9 +350,9 @@ void Task1ms_TIM5_Callback()
 										#endif
 										}
 									if(Robotarm.DR16.Get_Left_Switch()==DR16_Switch_Status_UP)//抬升高度控制，在自定义控制器控制模式下通过左拨杆控制抬升高度
-									{Robotarm.Arm_Uplift.Target_Up_Length+=0.002;}
+									{Robotarm.Arm_Uplift.Target_Up_Length+=0.0025;}
 									else if(Robotarm.DR16.Get_Left_Switch()==DR16_Switch_Status_DOWN)
-									{Robotarm.Arm_Uplift.Target_Up_Length-=0.002;}
+									{Robotarm.Arm_Uplift.Target_Up_Length-=0.0025;}
 									Math_Constrain(Robotarm.Arm_Uplift.Target_Up_Length,0.f,40.f);
 										
 						}
@@ -377,7 +377,7 @@ void Task1ms_TIM5_Callback()
             {
                 Robotarm.Robotarm_Resolution.Set_Status(Robotarm_Task_Status_Wait_Order);
                  memcpy(Robotarm.Jonit_AngleInit, tmp_1_5_angle, 6 * sizeof(float));
-                Robotarm.Arm_Uplift.Target_Up_Length=0;
+               // Robotarm.Arm_Uplift.Target_Up_Length=0;
             }
             break;
             default:
