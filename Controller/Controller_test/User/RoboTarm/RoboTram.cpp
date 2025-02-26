@@ -37,4 +37,29 @@ void Class_RobotTram::RoboTram_Angle_Control_Trasmit()
     tmp_data[11] = 0x11;
     HAL_UART_Transmit(&huart3,tmp_data,12,10);
 }
+void Class_RobotTram::Encoder_Data_Referee_Trasmit()
+{
+	
+//	tmp_data[0] = 0xA5;
+//    for(auto i=0;i<5;i++)
+//    {
+//        int16_t IntAngle;
+//        IntAngle = (int16_t)(Angle[i]*100);
+//        memcpy(&tmp_data[2*i+1],&IntAngle,2);
+//    }
+//    tmp_data[11] = 0x11;
+//    HAL_UART_Transmit(&huart3,tmp_data,12,10);
+//	
+	
+	
+	
+  uint8_t tmp_data[10];
+  for(auto i=0;i<5;i++)
+  {
+    int16_t IntAngle;
+    IntAngle = (int16_t)(Angle[i]*100);
+		memcpy(&tmp_data[2*i],&IntAngle,2);
+  }
+  Referee.Data_Concatenation(Referee_Command_ID_INTERACTION_CUSTOM_CONTROLLER,tmp_data,30);
+}
 

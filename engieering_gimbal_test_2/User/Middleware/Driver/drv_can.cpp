@@ -263,8 +263,7 @@ void TIM_CAN_PeriodElapsedCallback()
 		
 		if(cnt%10 == 0)
 			can_tx_status[2]=CAN_Send_Data(&hcan2, 0x088, CAN2_Gimbal_Tx_Chassis_Data, 8, CAN_ID_STD);
-		//send = 1;
-
+	
 		// if(HAL_CAN_GetTxMailboxesFreeLevel(&hcan1) != 0)
 		// CAN_Send_Data(&hcan1, 0x12, CAN1_0xx02_Tx_Data, 8, CAN_ID_STD);
 		// if(HAL_CAN_GetTxMailboxesFreeLevel(&hcan1) != 0)

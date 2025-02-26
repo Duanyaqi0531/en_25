@@ -76,7 +76,7 @@ void Class_Robotarm::Init()
 	//机械臂抬升初始化
 	Arm_Uplift.Init(&hcan2, DJI_Motor_ID_0x203, DJI_Motor_Control_Method_ANGLE);
 	Arm_Uplift.PID_Angle.Init(80.0f, 0.05f, 0.0f, 0.0f, 180.0f, 180.0f);
-	Arm_Uplift.PID_Omega.Init(100.0f, 0.01f, 0.0f, 0.0f, 2000.0f, 5000.0f);
+	Arm_Uplift.PID_Omega.Init(100.0f, 0.01f, 0.0f, 0.0f, 2000.0f, 7000.0f);
 
 	Relay1.Init(GPIOE,GPIO_PIN_11);
 	Relay2.Init(GPIOE,GPIO_PIN_13);
@@ -119,11 +119,11 @@ void Class_Robotarm::TIM_Robotarm_Task_PeriodElapsedCallback()
     Motor_Joint3.TIM_Process_PeriodElapsedCallback();
 	Motor_Joint4.TIM_PID_PeriodElapsedCallback();
 	//校准的时候不进行右边2006电机控制
-	if (init_finished)
-	{
+	//if (init_finished)
+	//{
 		Motor_Joint5.TIM_PID_PeriodElapsedCallback();
 		Robotarm.Arm_Uplift.Calculate_Actual_Up_Length(Robotarm.Get_Joint_Offset_Angle(6));
-	}
+	//}
 
  	Robotarm.Arm_Uplift.TIM_PID_PeriodElapsedCallback();
 
@@ -146,6 +146,8 @@ void Class_Robotarm::Task_Alive_PeriodElapsedCallback()
 }
 void Class_Robotarm::TIM_Robotarm_Disable_PeriodElapsedCallback()
 {
+	Arm_Uplift.Set_DJI_Motor_Control_Method(DJI_Motor_Control_Method_OPENLOOP);
+	Arm_Uplift.Set_Target_Torque(0.0f);
 	Motor_Joint1.Set_AK_Motor_Control_Method(CAN_PACKET_DIS_RUN_CONTROL);
 	Motor_Joint2.Set_AK_Motor_Control_Method(CAN_PACKET_DIS_RUN_CONTROL);
 	Motor_Joint3.Set_DM_Control_Status(DM_Motor_Control_Status_DISABLE);
@@ -221,8 +223,13 @@ void Class_RoRobotic_Arm_Uplift::TIM_PID_PeriodElapsedCallback()
 void Class_Robotarm::Control_Chassis_Task()
 {
 	float dr16_l_x, dr16_l_y, dr16_r_x;
+	float chassis_velocity_x = 0, chassis_velocity_y = 0;
+  float chassis_omega = 0;
+
 	// 设置底盘速度
 	if (DR16.Get_DR16_Status() == DR16_Status_ENABLE)
+	{
+	 if (Get_DR16_Control_Type() == DR16_Control_Type_REMOTE)
 	{
 		// 设置底盘控制方式
 		Chassis_control_type = CHASSIS_Control_Type_FLLOW;
@@ -237,13 +244,69 @@ void Class_Robotarm::Control_Chassis_Task()
 		Chassis.Chassis_Vy = dr16_l_y * Chassis.Max_Chassis_Vy;
 		Chassis.Chassis_Omega = dr16_r_x * Chassis.Max_Chassis_Omega;
 	}
-	else
-	{
+	 else if (Get_DR16_Control_Type() == DR16_Control_Type_KEYBOARD)
+    {
+
+        if (DR16.Get_Keyboard_Key_Shift() == DR16_Key_Status_PRESSED) // 按住shift加速
+        {
+            DR16_Mouse_Chassis_Shift = 1.0f;
+            Sprint_Status = Sprint_Status_ENABLE;
+        }
+        else
+        {
+            DR16_Mouse_Chassis_Shift = 2.0f;
+            Sprint_Status = Sprint_Status_DISABLE;
+        }
+
+        if (DR16.Get_Keyboard_Key_A() == DR16_Key_Status_PRESSED) // x轴
+        {
+            chassis_velocity_x = -Chassis.Max_Chassis_Vx / DR16_Mouse_Chassis_Shift;
+        }
+        if (DR16.Get_Keyboard_Key_D() == DR16_Key_Status_PRESSED)
+        {
+            chassis_velocity_x = Chassis.Max_Chassis_Vx / DR16_Mouse_Chassis_Shift;
+        }
+        if (DR16.Get_Keyboard_Key_W() == DR16_Key_Status_PRESSED) // y轴
+        {
+            chassis_velocity_y = Chassis.Max_Chassis_Vy / DR16_Mouse_Chassis_Shift;
+        }
+        if (DR16.Get_Keyboard_Key_S() == DR16_Key_Status_PRESSED)
+        {
+            chassis_velocity_y = -Chassis.Max_Chassis_Vy / DR16_Mouse_Chassis_Shift;
+        }
+
+//        if (DR16.Get_Keyboard_Key_Q() == DR16_Key_Status_TRIG_FREE_PRESSED) // Q键切换小陀螺与随动
+//        {
+//            if (Chassis.Get_Chassis_Control_Type() == Chassis_Control_Type_FLLOW)
+//            {
+//                Chassis.Set_Chassis_Control_Type(Chassis_Control_Type_SPIN);
+//                chassis_omega = Chassis.Get_Spin_Omega();
+//            }
+//            else
+//                Chassis.Set_Chassis_Control_Type(Chassis_Control_Type_FLLOW);
+//        }
+
+//        if (DR16.Get_Keyboard_Key_G() == DR16_Key_Status_PRESSED) // 按下G键刷新UI
+//        {
+//            Referee_UI_Refresh_Status = Referee_UI_Refresh_Status_ENABLE;
+//        }
+//        else
+//        {
+//            Referee_UI_Refresh_Status = Referee_UI_Refresh_Status_DISABLE;
+//        }
+			Chassis.Chassis_Vx =chassis_velocity_x;
+			Chassis.Chassis_Vy =chassis_velocity_y;
+			Chassis.Chassis_Omega =chassis_omega;
+    }
+	}
+		else
+		{
 		Chassis_control_type = CHASSIS_Control_Type_DISABLE;
 		Chassis.Chassis_Vx = 0.0f;
 		Chassis.Chassis_Vy = 0.0f;
 		Chassis.Chassis_Omega = 0.0f;
-	}
+		}
+	
 }
 uint8_t Control_Type = 0;
 void Class_Robotarm::CAN_Gimbal_Tx_Chassis()
@@ -542,6 +605,25 @@ bool Class_Robotarm::Robotarm_Angle_verification(float *Angle_now,float *Angle_t
 		return true;
 	}
 	return false;
+}
+void Class_Robotarm::Judge_DR16_Control_Type()
+{
+    if (DR16.Get_Left_X() != 0 ||
+         DR16.Get_Left_Y() != 0 ||
+        DR16.Get_Right_X() != 0)
+    {
+        DR16_Control_Type = DR16_Control_Type_REMOTE;
+    }
+    else if (DR16.Get_Mouse_X() != 0 ||
+             DR16.Get_Mouse_Y() != 0 ||
+             DR16.Get_Mouse_Z() != 0 ||
+             DR16.Get_Keyboard_Key_A() != 0 ||
+             DR16.Get_Keyboard_Key_D() != 0 ||
+             DR16.Get_Keyboard_Key_W() != 0 ||
+             DR16.Get_Keyboard_Key_S() != 0)
+    {
+        DR16_Control_Type = DR16_Control_Type_KEYBOARD;
+    }
 }
 
 

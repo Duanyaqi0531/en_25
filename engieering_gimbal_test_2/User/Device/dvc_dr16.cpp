@@ -326,16 +326,24 @@ void Class_DR16::Image_Data_Process_Customer_controller(uint8_t* __rx_buffer)
 //            Angle_Image[i] = temp/100.f;
 //        }
 //	    
-	int16_t IntAngle;
-    int8_t total_round;
-	for(uint8_t i=0;i<5;i++)
-  {
+	
+	
+//	int16_t IntAngle;
+//    int8_t total_round;
+//	for(uint8_t i=0;i<5;i++)
+//  {
 
-		memcpy(&IntAngle,&Now_UART_Image_Rx_Data_Customer_controller.Data[3*i],2);
-    memcpy(&total_round,&Now_UART_Image_Rx_Data_Customer_controller.Data[3*i+2],1);
-		Angle_Image[i]=(float)(IntAngle/100.f);
+//		memcpy(&IntAngle,&Now_UART_Image_Rx_Data_Customer_controller.Data[3*i],2);
+//    memcpy(&total_round,&Now_UART_Image_Rx_Data_Customer_controller.Data[3*i+2],1);
+//		Angle_Image[i]=(float)(IntAngle/100.f);
 
-  }
+//  }
+	for(uint8_t i=0; i<5; i++)
+        {
+            int16_t temp = (Now_UART_Image_Rx_Data_Customer_controller.Data[2*i+2]<<8) | Now_UART_Image_Rx_Data_Customer_controller.Data[2*i+1];
+            Angle_Image[i] = temp/100.f;
+        }
+	
     //memcpy(&Customer_controller,&tmp_buffer,15);
    
 }
@@ -379,12 +387,17 @@ void Class_DR16::Image_UART_RxCpltCallback(uint8_t *Rx_Data)
             //保留上一次数据
             memcpy(&Pre_UART_Image_Rx_Data, &Rx_Data[7], sizeof(Struct_Image_UART_Data));            
         }
-        else if (cmd_id == 0x0302)// && data_length == 30
+        else if ((cmd_id == 0x0302)&& (data_length == 30))// && data_length == 30
         {
-            Image_Flag_Customer_controller += 1;
-            Image_Data_Process_Customer_controller(&Rx_Data[7]);
-            //保留上一次数据
-            memcpy(&Pre_UART_Image_Rx_Data_Customer_controller, &Rx_Data[7], sizeof(Struct_Image_UART_Data_Customer_controller));     
+				 for(uint8_t i=0; i<5; i++)
+        {
+            int16_t temp = (Rx_Data[2*i+8]<<8) | (Rx_Data[2*i+7]);
+            Customize_Controller_Data.Angle[i] = float(temp/100.f);
+        }
+//            Image_Flag_Customer_controller += 1;
+//            Image_Data_Process_Customer_controller(&Rx_Data[7]);
+//            //保留上一次数据
+//            memcpy(&Pre_UART_Image_Rx_Data_Customer_controller, &Rx_Data[7], sizeof(Struct_Image_UART_Data_Customer_controller));     
         }
         
     }

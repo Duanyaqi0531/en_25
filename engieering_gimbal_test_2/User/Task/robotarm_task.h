@@ -25,6 +25,7 @@
 #include "drv_can.h"
 #include "dvc_minipc.h"
 #include "dvc_relays.h"
+#include "crt_chassis.h"
 /* Exported macros -----------------------------------------------------------*/
 
 /* Exported types ------------------------------------------------------------*/
@@ -39,6 +40,15 @@ enum Enum_Robotarm_Control_Type
     Robotarm_Control_Type_NORMAL,
 };
 
+/**
+ * @brief DR16控制数据来源
+ *
+ */
+enum Enum_DR16_Control_Type
+{
+    DR16_Control_Type_REMOTE = 0,
+    DR16_Control_Type_KEYBOARD,
+};
 /**
  * @brief 解算任务运行阶段
  *
@@ -86,6 +96,16 @@ enum Enum_Chassis_Control_Type__
     CHASSIS_Control_Type_FLLOW = 1,
     CHASSIS_Control_Type_SPIN = 2,
 };
+/**
+* @brief 是否冲刺控制类型
+ *
+ */
+//enum Enum_Sprint_Status : uint8_t
+//{
+//    Sprint_Status_DISABLE = 0, 
+//    Sprint_Status_ENABLE,
+//};
+
 struct Struct_Custom_Communication_Data {
 	uint16_t Flow_x;
 	uint16_t Flow_y;
@@ -278,6 +298,8 @@ public:
 	Class_Chassis_Communication__ Chassis;
 	//底盘控制方式
 	Enum_Chassis_Control_Type__  Chassis_control_type;
+	//冲刺
+	Enum_Sprint_Status Sprint_Status = Sprint_Status_DISABLE;
 	//存放对象的地址，需要用强制转换
 	uint32_t Motor_Joint[6]= {reinterpret_cast<uint32_t>(&Motor_Joint1),reinterpret_cast<uint32_t>(&Motor_Joint2),reinterpret_cast<uint32_t>(&Motor_Joint3),
 							 reinterpret_cast<uint32_t>(&Motor_Joint4),reinterpret_cast<uint32_t>(&Motor_Joint5)};
@@ -287,6 +309,8 @@ public:
 	inline float Get_Joint_Offset_Angle(uint8_t Num);
 	
 	inline float Get_Joint_Limit_Angle(uint8_t Num);
+							 
+	inline Enum_DR16_Control_Type Get_DR16_Control_Type();
 
 	//获得目标位姿
 	inline Position_Orientation_t Get_Target_Position_Orientation();
@@ -325,13 +349,17 @@ public:
 	void TIM_Robotarm_Disable_PeriodElapsedCallback();
 	//机械臂输出
     void Output();
+		void Judge_DR16_Control_Type();
+  void Control_Chassis();
 protected:
     //初始化相关常量
 
     //常量
+		//键鼠模式按住shift 最大速度缩放系数	
+        float DR16_Mouse_Chassis_Shift = 2.0f;
 		//车在特定位置，各种情况机械臂的角度
 		//取出银矿相关角度
-	//	const float Angle_Pick_Fisrt[6]={90,145,145,0,0,5};
+		//const float Angle_Pick_Fisrt[6]={90,145,145,0,0,5};
 		const float Angle_Pick_Fisrt[6]={70,110,180,0,0,5};
 		const float Angle_Place_Second[6]={45,3,10,0,0,13};
 		//const float Angle_Pick_Second[6]={45,145,178,0,0,5};
@@ -435,11 +463,28 @@ protected:
 	bool Motor_Calibration(Class_DJI_Motor_C610 &Motor,uint8_t num,float Cali_Omega,float Cali_Max_Out,float Target_Angle);
 	bool Motor_Calibration(float Cali_Omega,float Cali_Max_Out);
   bool Motor_Calibration_Uplift(Class_RoRobotic_Arm_Uplift &Uplift,float Cali_Omega,float Cali_Max_Out);
+	
+	Enum_DR16_Control_Type DR16_Control_Type = DR16_Control_Type_REMOTE;
+	//键鼠操作相关函数
+  
 };
 
 /* Exported variables --------------------------------------------------------*/
 
 /* Exported function declarations --------------------------------------------*/
+
+
+ /**
+     * @brief 获取DR16控制数据来源
+     * 
+     * @return Enum_DR16_Control_Type DR16控制数据来源
+     */
+
+Enum_DR16_Control_Type Class_Robotarm::Get_DR16_Control_Type()
+    {
+        return (DR16_Control_Type);
+    }
+
 
 /**
  * @brief 获取第Num个Joint的世界坐标系角度

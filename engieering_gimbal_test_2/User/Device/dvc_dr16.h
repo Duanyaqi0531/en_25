@@ -145,6 +145,10 @@ struct Struct_Image_UART_Data_Customer_controller
    int8_t Data[30];
 } __attribute__((packed)); 
 
+struct Struct_Customize_Controller_Data
+{
+  float Angle[5];
+}__attribute__((packed));
 /**
  * @brief DR16源数据
  *
@@ -235,6 +239,7 @@ public:
     void Image_UART_RxCpltCallback(uint8_t *Rx_Data);
 
     void TIM1msMod50_Alive_PeriodElapsedCallback();
+Struct_Customize_Controller_Data Customize_Controller_Data;
 
     
 protected:
@@ -264,7 +269,7 @@ protected:
     Struct_Image_UART_Data_Customer_controller Pre_UART_Image_Rx_Data_Customer_controller;
 		
 		Struct_Customer_controller Customer_controller;
-
+		
     //当前时刻的遥控器接收flag
     uint32_t DR16_Flag = 0;
     //前一时刻的遥控器接收flag

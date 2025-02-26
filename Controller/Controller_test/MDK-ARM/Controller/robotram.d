@@ -22,5 +22,6 @@ controller/robotram.o: ..\User\RoboTarm\RoboTram.cpp \
   ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_tim.h \
   ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_tim_ex.h \
   ..\Drivers\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_uart.h \
-  ..\Core\Inc\tim.h ..\Core\Inc\main.h ..\Core\Inc\usart.h \
+  ..\User\Device\dvc_referee.h ..\User\Middleware\Driver\drv_uart.h \
+  ..\Core\Inc\usart.h ..\Core\Inc\main.h ..\Core\Inc\tim.h \
   ..\User\Task\tsk_config_and_callback.h

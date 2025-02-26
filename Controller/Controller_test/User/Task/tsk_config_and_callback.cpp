@@ -32,7 +32,7 @@
 
 //Class_Encoder Encoder[5];
 Class_RobotTram RobotTram;
-Class_Referee Referee;
+
 
 /* Private function declarations ---------------------------------------------*/
 
@@ -64,13 +64,13 @@ Class_Referee Referee;
 // #endif
 /**
 * @brief UART裁判系统回调函数
-*
+*RobotTram
 * @param Buffer UART收到的消息
 * @param Length 长度
 */
 void Referee_UART3_Callback(uint8_t *Buffer, uint16_t Length)
 {
-  Referee.UART_RxCpltCallback(Buffer);
+  RobotTram.Referee.UART_RxCpltCallback(Buffer);
 }
 /**************************************************************************
   * @brief  ????????
@@ -138,31 +138,13 @@ void Encoder_Data_Control_Trasmit()
   tmp_data[16] = 0x11;
   HAL_UART_Transmit(&huart3,tmp_data,17,10);
 }
-void Encoder_Data_Referee_Trasmit()
-{
-  uint8_t tmp_data[15];
-  for(auto i=0;i<5;i++)
-  {
-    int16_t IntAngle;
-    int8_t total_round;
-    IntAngle = (int16_t)(RobotTram.Encoder[i].Get_Now_Angle()*100);
-    total_round = (int8_t)RobotTram.Encoder[i].Get_Total_Round();
-    memcpy(&tmp_data[3*i],&IntAngle,2);
-    memcpy(&tmp_data[3*i+2],&total_round,1);
-  }
-  Referee.Data_Concatenation(Referee_Command_ID_INTERACTION_CUSTOM_CONTROLLER,tmp_data,30);
-}
 
 
 void Task_Init()
 {
-  // Encoder[0].Init(&htim1);
-  // Encoder[1].Init(&htim2);
-  // Encoder[2].Init(&htim3);
-  // Encoder[3].Init(&htim4);
-	// Encoder[4].Init(&htim5);
+
   RobotTram.Init();
-	Referee.Init(&huart3);
+	RobotTram.Referee.Init(&huart3);
 	// TIM_Init(&htim6, Task1ms_TIM6_Callback);
 //		Store_Init();
 //		Store_Data[0]=0xA5A5;
@@ -180,7 +162,7 @@ void Task_loop()
   // //五个编码器角度计算
 
   RobotTram.Calculate_RobotTram_Angle();
-  RobotTram.RoboTram_Angle_Control_Trasmit();
+ // RobotTram.RoboTram_Angle_Control_Trasmit();
 //	if(start_flag)
 //		{
 //			for(int i=0;i<5;i++)
@@ -195,10 +177,10 @@ void Task_loop()
 //		{
 //			
 //		}
-		HAL_Delay(30);
+		HAL_Delay(40);
 //	HAL_Delay(500);
   //裁判系统打包发送所有的编码器角度
-  //Encoder_Data_Referee_Trasmit();
+  RobotTram.Encoder_Data_Referee_Trasmit();
   //直接给机器发送所有的编码器角度
    //Encoder_Data_Control_Trasmit();
 }
