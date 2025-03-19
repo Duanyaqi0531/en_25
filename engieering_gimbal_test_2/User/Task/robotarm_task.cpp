@@ -40,13 +40,18 @@ void Class_Robotarm::Init()
 	//机械臂解算任务初始化
 	Robotarm_Resolution.Robotarm = this;
 	Robotarm_Resolution.Init(9 , 0);
+	Robotarm.Referee.Init(&huart6,0xA5);
 	DR16.Init(&huart3,&huart6);
+	//板载imu初始化
+	Boardc_BMI.Init();
 	//底盘通信初始化
 	Chassis_Communication.Init(&hcan2);
 	//MiniPC初始化
 	MiniPc.Init(&MiniPC_USB_Manage_Object);
 	//设置机械臂为正常模式
 	Set_Robotarm_Control_Type(Robotarm_Control_Type_NORMAL);
+	//底盘YawPid初始化
+	//Chassis.PID_Yaw.Init(0.15f,0.f,0.f,0.f,0.f,4.0f);
 	#ifdef _CAN_PACKET_SET_POS_SPD
     //1轴电机
   	Motor_Joint1.Init(&hcan2, AK_Motor_ID_0x01, CAN_PACKET_SET_POS_SPD , 30.0f , 2.0f);
@@ -274,7 +279,19 @@ void Class_Robotarm::Control_Chassis_Task()
         {
             chassis_velocity_y = -Chassis.Max_Chassis_Vy / DR16_Mouse_Chassis_Shift;
         }
-
+		Chassis.Actual_Yaw=-Robotarm.Boardc_BMI.Get_Angle_YawTotal();
+		Chassis.Target_Yaw+=Robotarm.DR16.Get_Mouse_X()*10.0f;
+		Chassis.TIM_PID_PeriodElapsedCallback();
+		chassis_omega=Chassis.PID_Yaw.Get_Out();
+				
+				//				 if (DR16.Get_Keyboard_Key_Q() == DR16_Key_Status_PRESSED) // y轴
+//        {
+//            chassis_omega = -2.5;
+//        }
+//        if (DR16.Get_Keyboard_Key_E()  == DR16_Key_Status_PRESSED)
+//        {
+//            chassis_omega = 2.5;
+//        }
 //        if (DR16.Get_Keyboard_Key_Q() == DR16_Key_Status_TRIG_FREE_PRESSED) // Q键切换小陀螺与随动
 //        {
 //            if (Chassis.Get_Chassis_Control_Type() == Chassis_Control_Type_FLLOW)
@@ -294,11 +311,13 @@ void Class_Robotarm::Control_Chassis_Task()
 //        {
 //            Referee_UI_Refresh_Status = Referee_UI_Refresh_Status_DISABLE;
 //        }
+
 			Chassis.Chassis_Vx =chassis_velocity_x;
 			Chassis.Chassis_Vy =chassis_velocity_y;
-			Chassis.Chassis_Omega =chassis_omega;
+		  Chassis.Chassis_Omega=chassis_omega;
     }
 	}
+		
 		else
 		{
 		Chassis_control_type = CHASSIS_Control_Type_DISABLE;
@@ -306,6 +325,7 @@ void Class_Robotarm::Control_Chassis_Task()
 		Chassis.Chassis_Vy = 0.0f;
 		Chassis.Chassis_Omega = 0.0f;
 		}
+	
 	
 }
 uint8_t Control_Type = 0;
@@ -782,6 +802,7 @@ void Class_Robotarm_Resolution::Reload_Task_Status_PeriodElapsedCallback()
 				{
 						Set_Status(Robotarm_Task_Status_First_Sliver_Test_2);
 				}
+				Angle_Play_Flag=1;
 			}
 			break;
 			case (Robotarm_Task_Status_First_Sliver_Test_2):
@@ -980,6 +1001,13 @@ void Class_Robotarm_Resolution::Reload_Task_Status_PeriodElapsedCallback()
 			break;
 	}
 }
+}
+void Class_Chassis_Communication__::TIM_PID_PeriodElapsedCallback()
+{
+		PID_Yaw.Set_Target(Target_Yaw);
+        PID_Yaw.Set_Now(Actual_Yaw);
+        PID_Yaw.TIM_Adjust_PeriodElapsedCallback();
+       
 }
 //#endif
 #ifdef _OLD

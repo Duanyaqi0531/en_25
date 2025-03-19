@@ -256,18 +256,14 @@ void MiniPC_USB_Callback(uint8_t *Buffer, uint32_t Length)
 void Task100us_TIM4_Callback()
 {
     // 单给IMU消息开的定时器 ims
-    // Robotarm.Boardc_BMI.TIM_Calculate_PeriodElapsedCallback();     
+     Robotarm.Boardc_BMI.TIM_Calculate_PeriodElapsedCallback();     
 }
 
 /**
  * @brief TIM5任务回调函数
  *
  */
-#define DEBUG_REMOTE
-#define IMAGE_REMOTE
-//#define OFFLINE_REMOTE
-#define DEBUG_REMOTE_SPEED_1 1.f
-#define DEBUG_REMOTE_SPEED_2 1.f
+
 //注册订阅者
 Subscriber Task_Sub_Joint5_angle = Message_Manager.SubRegister("Joint5_angle", sizeof(float));
 float debug_test_angle[5];
@@ -450,10 +446,10 @@ extern "C" void Task_Init()
     CAN_Init(&hcan2, Device_CAN2_Callback);
  
     //c板陀螺仪spi外设
-    // SPI_Init(&hspi1,Device_SPI1_Callback);
+     SPI_Init(&hspi1,Device_SPI1_Callback);
 
     //磁力计iic外设
-    // IIC_Init(&hi2c3, Ist8310_IIC3_Callback);    
+     IIC_Init(&hi2c3, Ist8310_IIC3_Callback);    
   
     //裁判系统
     UART_Init(&huart6, Referee_UART6_Callback, 128);   //并未使用环形队列 尽量给长范围增加检索时间 减少丢包
@@ -472,7 +468,7 @@ extern "C" void Task_Init()
     //定时器循环任务
     TIM_Init(&htim4, Task100us_TIM4_Callback);
     TIM_Init(&htim5, Task1ms_TIM5_Callback);
-
+		HAL_TIM_PWM_Start(&htim10,TIM_CHANNEL_1);
     /********************************* 设备层初始化 *********************************/
 
     //设备层集成在交互层初始化中，没有显视地初始化
