@@ -146,39 +146,29 @@ void Task_Init()
   RobotTram.Init();
 	RobotTram.Referee.Init(&huart3);
 	// TIM_Init(&htim6, Task1ms_TIM6_Callback);
-//		Store_Init();
-//		Store_Data[0]=0xA5A5;
+
 
 
 }
-bool start_flag=0;
-bool over_flag=0;
-bool read_flag=0;
-uint8_t record_num;
-extern uint8_t tmp_data[12];
-extern uint16_t Store_Data[STORE_COUNT];	
+GPIO_PinState get_key_temp;
 void Task_loop()
 {
   // //五个编码器角度计算
 
   RobotTram.Calculate_RobotTram_Angle();
+	get_key_temp=HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_4);
+	
+	if(get_key_temp==1)
+	{
+	RobotTram.key_flag=1;
+	}
+	else 
+	{
+	RobotTram.key_flag=0;
+	}
  // RobotTram.RoboTram_Angle_Control_Trasmit();
-//	if(start_flag)
-//		{
-//			for(int i=0;i<5;i++)
-//			{
-//				uint16_t temp=RobotTram.Get_Angle(i+1)*100;
-//				memcpy(&Store_Data[record_num*5+1],&temp,2);
-//			}
-//			if(record_num++>=100)start_flag=0;
-//		}
-//		if(over_flag){Store_Save();over_flag=0;};
-//		if(read_flag)
-//		{
-//			
-//		}
-		HAL_Delay(40);
-//	HAL_Delay(500);
+
+		HAL_Delay(33);
   //裁判系统打包发送所有的编码器角度
   RobotTram.Encoder_Data_Referee_Trasmit();
   //直接给机器发送所有的编码器角度

@@ -24,6 +24,7 @@ class Class_RobotTram
 		void Encoder_Data_Referee_Trasmit();
 		Class_Encoder Encoder[5];
 		Class_Referee Referee;
+		uint8_t key_flag;
     protected:
     //五个编码器
    

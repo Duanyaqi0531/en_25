@@ -53,13 +53,14 @@ void Class_RobotTram::Encoder_Data_Referee_Trasmit()
 	
 	
 	
-  uint8_t tmp_data[10];
+  uint8_t tmp_data[11];
   for(auto i=0;i<5;i++)
   {
     int16_t IntAngle;
     IntAngle = (int16_t)(Angle[i]*100);
 		memcpy(&tmp_data[2*i],&IntAngle,2);
   }
+		memcpy(&tmp_data[10],&key_flag,1);
   Referee.Data_Concatenation(Referee_Command_ID_INTERACTION_CUSTOM_CONTROLLER,tmp_data,30);
 }
 
