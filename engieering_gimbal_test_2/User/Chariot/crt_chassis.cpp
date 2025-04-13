@@ -16,7 +16,7 @@
  */
 
 /* Includes ------------------------------------------------------------------*/
-
+#define SPEED_SLOPE
 #include "crt_chassis.h"
 
 /* Private macros ------------------------------------------------------------*/
@@ -57,8 +57,9 @@ void Class_Tricycle_Chassis::Init(float __Velocity_X_Max, float __Velocity_Y_Max
     //电机PID批量初始化
     for (int i = 0; i < 4; i++)
     {
-        Motor_Wheel[i].PID_Omega.Init(1500.0f, 0.0f, 0.0f, 0.0f, Motor_Wheel[i].Get_Output_Max(), Motor_Wheel[i].Get_Output_Max());
+        Motor_Wheel[i].PID_Omega.Init(1800.0f, 0.0f, 0.0f, 0.0f, Motor_Wheel[i].Get_Output_Max(), Motor_Wheel[i].Get_Output_Max());
     }
+		// Motor_Wheel[2].PID_Omega.Init(2200.0f, 0.0f, 0.0f, 0.0f, Motor_Wheel[2].Get_Output_Max(), Motor_Wheel[2].Get_Output_Max());
 
     //轮向电机ID初始化
     Motor_Wheel[0].Init(&hcan1, DJI_Motor_ID_0x201);
@@ -67,7 +68,7 @@ void Class_Tricycle_Chassis::Init(float __Velocity_X_Max, float __Velocity_Y_Max
     Motor_Wheel[3].Init(&hcan1, DJI_Motor_ID_0x204);
 }
 
-
+#define Max_Omega 31.42f//rpm = 300
 /**
  * @brief 速度解算
  *
@@ -100,57 +101,52 @@ void Class_Tricycle_Chassis::Speed_Resolution(){
             //底盘限速
             if (Velocity_X_Max != 0)
             {
-                Math_Constrain(Target_Velocity_X, -Velocity_X_Max, Velocity_X_Max);
+                Math_Constrain(&Target_Velocity_X, -Velocity_X_Max, Velocity_X_Max);
             }
             if (Velocity_Y_Max != 0)
             {
-                Math_Constrain(Target_Velocity_Y, -Velocity_Y_Max, Velocity_Y_Max);
+                Math_Constrain(&Target_Velocity_Y, -Velocity_Y_Max, Velocity_Y_Max);
             }
             if (Omega_Max != 0)
             {
-                Math_Constrain(Target_Omega, -Omega_Max, Omega_Max);
+                Math_Constrain(&Target_Omega, -Omega_Max, Omega_Max);
             }
 
-            #ifdef SPEED_SLOPE
+            #ifdef SPEED_SLOPE 
             //速度换算，正运动学分解
-            float motor1_temp_linear_vel = Slope_Velocity_Y.Get_Out() - Slope_Velocity_X.Get_Out() + Slope_Omega.Get_Out()*(HALF_WIDTH+HALF_LENGTH);
-            float motor2_temp_linear_vel = Slope_Velocity_Y.Get_Out() + Slope_Velocity_X.Get_Out() - Slope_Omega.Get_Out()*(HALF_WIDTH+HALF_LENGTH);
-            float motor3_temp_linear_vel = Slope_Velocity_Y.Get_Out() + Slope_Velocity_X.Get_Out() + Slope_Omega.Get_Out()*(HALF_WIDTH+HALF_LENGTH);
-            float motor4_temp_linear_vel = Slope_Velocity_Y.Get_Out() - Slope_Velocity_X.Get_Out() - Slope_Omega.Get_Out()*(HALF_WIDTH+HALF_LENGTH);
-            #else
+            float motor1_temp_linear_vel = +Slope_Velocity_Y.Get_Out() + Slope_Velocity_X.Get_Out() + Slope_Omega.Get_Out()*(HALF_WIDTH+HALF_LENGTH);
+            float motor2_temp_linear_vel = +Slope_Velocity_Y.Get_Out() +Slope_Velocity_X.Get_Out() - Slope_Omega.Get_Out()*(HALF_WIDTH+HALF_LENGTH);
+            float motor3_temp_linear_vel = +Slope_Velocity_Y.Get_Out() - Slope_Velocity_X.Get_Out() + Slope_Omega.Get_Out()*(HALF_WIDTH+HALF_LENGTH);
+            float motor4_temp_linear_vel = +Slope_Velocity_Y.Get_Out() -Slope_Velocity_X.Get_Out() - Slope_Omega.Get_Out()*(HALF_WIDTH+HALF_LENGTH);
+            #endif
             //速度换算，正运动学分解
+            #ifdef Tricycle_Chassis
             float motor1_temp_linear_vel = Target_Velocity_Y - Target_Velocity_X + Target_Omega*(HALF_WIDTH+HALF_LENGTH);
-            float motor2_temp_linear_vel = Target_Velocity_Y - Target_Velocity_X - Target_Omega*(HALF_WIDTH+HALF_LENGTH);
+            float motor2_temp_linear_vel = Target_Velocity_Y + Target_Velocity_X - Target_Omega*(HALF_WIDTH+HALF_LENGTH);
             float motor3_temp_linear_vel = Target_Velocity_Y + Target_Velocity_X + Target_Omega*(HALF_WIDTH+HALF_LENGTH);
-            float motor4_temp_linear_vel = Target_Velocity_Y + Target_Velocity_X - Target_Omega*(HALF_WIDTH+HALF_LENGTH);
-            #endif            
+            float motor4_temp_linear_vel = Target_Velocity_Y - Target_Velocity_X - Target_Omega*(HALF_WIDTH+HALF_LENGTH);
+            #endif   
+                 
             //线速度 cm/s  转角速度  RAD 
             float motor1_temp_rad = motor1_temp_linear_vel * VEL2RAD;
             float motor2_temp_rad = motor2_temp_linear_vel * VEL2RAD;
             float motor3_temp_rad = motor3_temp_linear_vel * VEL2RAD;
             float motor4_temp_rad = motor4_temp_linear_vel * VEL2RAD;
-            //角速度*减速比  设定目标 直接给到电机输出轴
-            Motor_Wheel[0].Set_Target_Omega_Radian(  motor2_temp_rad);
-            Motor_Wheel[1].Set_Target_Omega_Radian(- motor1_temp_rad);
-            Motor_Wheel[2].Set_Target_Omega_Radian(- motor3_temp_rad);
-            Motor_Wheel[3].Set_Target_Omega_Radian(  motor4_temp_rad);
-            //各个电机具体PID
-            for (int i = 0; i < 4; i++){
-                Motor_Wheel[i].TIM_PID_PeriodElapsedCallback();
-            }
-            //            Motor_Wheel[0].Set_Target_Omega_Radian(  temp_test_1);
-            //            Motor_Wheel[1].Set_Target_Omega_Radian( temp_test_2);
-            //            Motor_Wheel[2].Set_Target_Omega_Radian( temp_test_3);
-            //            Motor_Wheel[3].Set_Target_Omega_Radian(  temp_test_4);
+            //速度限幅
+            Math_Constrain(&motor1_temp_rad,-Max_Omega,Max_Omega);
+            Math_Constrain(&motor2_temp_rad,-Max_Omega,Max_Omega);
+            Math_Constrain(&motor3_temp_rad,-Max_Omega,Max_Omega);
+            Math_Constrain(&motor4_temp_rad,-Max_Omega,Max_Omega);
+             //角速度*减速比  设定目标 直接给到电机输出轴
+						temp_test_1 = motor1_temp_rad;
+						temp_test_2 = motor2_temp_rad;
+						temp_test_3 = motor3_temp_rad;
+						temp_test_4 = motor4_temp_rad;
+            Motor_Wheel[0].Set_Target_Omega_Radian(  -motor2_temp_rad);
+            Motor_Wheel[1].Set_Target_Omega_Radian(  motor1_temp_rad);
+            Motor_Wheel[2].Set_Target_Omega_Radian(  motor3_temp_rad);
+            Motor_Wheel[3].Set_Target_Omega_Radian(  -motor4_temp_rad);
 
-            // max=find_max();
-            // if(max>MAX_MOTOR_SPEED)
-            // {
-            //     Motor_Wheel[0].Set_Target_Omega(chassis_motor1.target_speed*MAX_MOTOR_SPEED*1.0/max);
-            //     chassis_motor2.target_speed=(int)(chassis_motor2.target_speed*MAX_MOTOR_SPEED*1.0/max);
-            //     chassis_motor3.target_speed=(int)(chassis_motor3.target_speed*MAX_MOTOR_SPEED*1.0/max);
-            //     chassis_motor4.target_speed=(int)(chassis_motor4.target_speed*MAX_MOTOR_SPEED*1.0/max);
-            // }
         }
         break;
     }   
@@ -177,44 +173,14 @@ void Class_Tricycle_Chassis::TIM_Calculate_PeriodElapsedCallback(Enum_Sprint_Sta
     #endif
     //速度解算
     Speed_Resolution();
-
-    #ifdef POWER_LIMIT
-    
-    /****************************超级电容***********************************/
-    Supercap.Set_Now_Power(Referee->Get_Chassis_Power());
-    if(Referee->Get_Referee_Status()==Referee_Status_DISABLE)
-        Supercap.Set_Limit_Power(45.0f);
-    else
+ // 各个电机具体PID
+	
+   
+    for (int i = 0; i < 4; i++)
     {
-        float offset;
-        offset = (Referee->Get_Chassis_Energy_Buffer()-20.0f)/4;
-        Supercap.Set_Limit_Power(Referee->Get_Chassis_Power_Max() + offset);
+        Motor_Wheel[i].TIM_PID_PeriodElapsedCallback();
     }
-        
-    Supercap.TIM_Supercap_PeriodElapsedCallback();
-
-    /*************************功率限制策略*******************************/
-    if(__Sprint_Status==Sprint_Status_ENABLE)
-    {
-        //功率限制  
-        Power_Limit.Set_Power_Limit(Referee->Get_Chassis_Power_Max()*1.5f);
-    }
-    else
-    {
-        Power_Limit.Set_Power_Limit(Referee->Get_Chassis_Power_Max());
-    }
-    //Power_Limit.Set_Power_Limit(45.0f);
-    Power_Limit.Set_Motor(Motor_Wheel);   //添加四个电机的控制电流和当前转速
-    Power_Limit.Set_Chassis_Buffer(Referee->Get_Chassis_Energy_Buffer());
-
-    if(Supercap.Get_Supercap_Status()==Supercap_Status_DISABLE)
-        Power_Limit.Set_Supercap_Enegry(0.0f);
-    else
-        Power_Limit.Set_Supercap_Enegry(Supercap.Get_Stored_Energy());
-    
-    Power_Limit.TIM_Adjust_PeriodElapsedCallback(Motor_Wheel);  //功率限制算法
-
-    #endif
+   Power_Limit.TIM_Adjust_PeriodElapsedCallback(Motor_Wheel);
 }
 
 /************************ COPYRIGHT(C) USTC-ROBOWALKER **************************/

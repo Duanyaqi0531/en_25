@@ -18,7 +18,10 @@
 
 //#define CHASSIS
 //#define GIMBAL
-#define Manipulator
+//#define CHASSIS_TASK
+#define GIMBAL_TASK
+#define IMAGE_REMOTE
+//#define Manipulator
 
 #ifdef CHASSIS 	
 
